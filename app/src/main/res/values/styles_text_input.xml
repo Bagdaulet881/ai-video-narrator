@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/TextInputLayoutTheme</item>
+        <item name="boxBackgroundColor">@color/transparent</item>
+        <item name="android:textColorHint">@color/black40</item>
+    </style>
+
+    <style name="TextInputLayoutTheme">
+        <item name="colorControlNormal">@color/EBEBEB</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+    </style>
+
+    <style name="TextInputLayoutStyle.OutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/TextInputLayoutTheme</item>
+        <item name="boxBackgroundColor">@color/transparent</item>
+        <item name="boxStrokeColor">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="boxCornerRadiusBottomEnd">0dp</item>
+        <item name="boxCornerRadiusBottomStart">0dp</item>
+        <item name="boxCornerRadiusTopEnd">0dp</item>
+        <item name="boxCornerRadiusTopStart">0dp</item>
+    </style>
+
+    <style name="TextInputLayoutStyle.Form" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/TextInputLayoutTheme</item>
+        <item name="boxBackgroundColor">@color/transparent</item>
+        <item name="strokeColor">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="boxCornerRadiusBottomEnd">0dp</item>
+        <item name="boxCornerRadiusBottomStart">0dp</item>
+        <item name="boxCornerRadiusTopEnd">0dp</item>
+        <item name="boxCornerRadiusTopStart">0dp</item>
+    </style>
+
+    <style name="EditTextStyle" parent="Font.Regular">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/sp_17</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:singleLine">true</item>
+
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingLeft">0dp</item>
+    </style>
+
+    <style name="EditTextStyle.Phone" parent="EditTextStyle">
+        <item name="android:digits">0123456789+- ()</item>
+        <!--<item name="android:imeOptions">actionDone</item>-->
+        <item name="android:inputType">number</item>
+    </style>
+
+    <style name="EditTextStyle.Email" parent="EditTextStyle">
+        <item name="android:inputType">textEmailAddress</item>
+    </style>
+
+    <style name="EditTextStyle.Iin" parent="EditTextStyle">
+        <item name="android:inputType">number</item>
+    </style>
+
+    <style name="EditTextStyle.Password" parent="EditTextStyle">
+        <item name="android:inputType">textPassword</item>
+    </style>
+
+    <style name="EditTextStyle.Name" parent="EditTextStyle">
+        <item name="android:inputType">textCapSentences</item>
+    </style>
+
+    <style name="EditTextStyle.Amount" parent="EditTextStyle">
+        <item name="android:inputType">numberDecimal</item>
+    </style>
+
+    <style name="TextInputLayoutStyle.Profile" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/TextInputLayoutTheme.Profile</item>
+        <item name="boxBackgroundColor">@color/transparent</item>
+        <item name="android:textColorHint">@color/black40</item>
+    </style>
+
+    <style name="TextInputLayoutTheme.Profile">
+        <item name="colorControlNormal">@color/EBEBEB</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+    </style>
+
+    <style name="LayoutInputFormStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="hintEnabled">false</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/TextInputLayoutTheme.Profile</item>
+        <item name="boxBackgroundColor">@color/transparent</item>
+        <item name="boxStrokeColor">@color/text_input_box_stroke</item>
+        <item name="boxCornerRadiusTopStart">@dimen/dp_8</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/dp_8</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/dp_8</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/dp_8</item>
+        <item name="android:textColorHint">@color/black40</item>
+    </style>
+    <style name="TextInputLayoutTheme.Auth">
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+    </style>
+    <style name="LayoutInputFormStyle.Auth" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="hintEnabled">false</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/TextInputLayoutTheme.Auth</item>
+        <item name="boxBackgroundColor">@color/transparent</item>
+        <item name="boxCornerRadiusTopStart">@dimen/dp_8</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/dp_8</item>
+        <item name="boxStrokeColor">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/dp_8</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/dp_8</item>
+    </style>
+    <style name="EditTextFormStyle.Auth" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:maxLines">1</item>
+        <item name="android:inputType">text</item>
+        <item name="android:focusable">true</item>
+        <item name="android:padding">@dimen/dp_18</item>
+        <item name="android:textSize">@dimen/sp_16</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="strokeColor">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+    <style name="EditTextFormStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:maxLines">1</item>
+        <item name="android:inputType">text|textCapSentences</item>
+        <item name="android:focusable">true</item>
+        <item name="android:padding">@dimen/dp_18</item>
+        <item name="android:textSize">@dimen/dp_16</item>
+        <item name="strokeColor">@color/formColor</item>
+        <item name="android:textColorHint">@color/formColor</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+</resources>

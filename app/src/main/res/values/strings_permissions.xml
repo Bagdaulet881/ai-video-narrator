@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--General-->
+    <string name="permission_ok">Хорошо</string>
+    <string name="permission_go_to_settings">Перейти в настройки</string>
+    <string name="permission_not_now">Не сейчас</string>
+
+    <string name="permission_exit">Выйти</string>
+
+    <!--Camera-->
+    <string name="permission_rationale_title_camera">Нет доступа к камере</string>
+    <string name="permission_rationale_message_camera">Разрешите приложению доступ к камере Вашего телефона</string>
+
+    <string name="permission_settings_title_camera">Невозможно продолжать работу</string>
+    <string name="permission_settings_message_camera">Доступ к камере устройства запрещен. Включите разрешение
+        \"Камера\" в настройках устройства.
+    </string>
+
+    <string name="permission_not_granted_camera">Нет доступа к камере Вашего телефона.</string>
+
+    <!--Storage-->
+    <string name="permission_rationale_title_storage">Нет доступа к памяти</string>
+    <string name="permission_rationale_message_storage">Разрешите приложению доступ к памяти Вашего телефона</string>
+
+    <string name="permission_settings_title_storage">Невозможно продолжать работу</string>
+    <string name="permission_settings_message_storage">Доступ к памяти устройства запрещен. Включите разрешение
+        \"Память\" в настройках устройства.
+    </string>
+
+    <string name="permission_not_granted_storage">Нет доступа к памяти Вашего телефона.</string>
+
+    <!--Location-->
+    <string name="permission_rationale_title_location">Моя геолокация</string>
+    <string name="permission_rationale_message_location">Разреши доступ к своей геолокации и мы покажем тебе ближайшие atm и отделения</string>
+    <string name="permission_rationale_message_location_short">Разрешите доступ к своей геолокации</string>
+    <string name="permission_message_location_hardware_off">Пожалуйста, включите определение местоположения по GPS в настройках вашей системы, чтобы видеть ваше местоположение</string>
+    <string name="permission_message_location_hardware_off_short">Пожалуйста, включите определение местоположения по GPS</string>
+
+    <string name="permission_settings_title_location">Моя геолокация</string>
+    <string name="permission_settings_message_location">Доступ к геолокации запрещен. Включи разрешение
+        \"Местоположение\" в настройках устройства.
+    </string>
+
+    <string name="permission_not_granted_location">Нет доступа к геолокации телефона.</string>
+
+</resources>

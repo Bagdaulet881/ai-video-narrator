@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_main_page"
+    app:startDestination="@id/mainPageFragment">
+
+    <fragment
+        android:id="@+id/mainPageFragment"
+        android:name="kz.invoice.app.ui.main_page.MainPageFragment"
+        android:label="MainPageFragment"
+        tools:layout="@layout/fragment_main_page">
+        <action
+            android:id="@+id/action_mainPageFragment_to_news"
+            app:destination="@id/navigation_news" />
+        <action
+            android:id="@+id/action_mainPageFragment_to_faq"
+            app:destination="@id/navigation_faq" />
+        <action
+            android:id="@+id/action_mainPageFragment_to_weather_forecast"
+            app:destination="@id/navigation_weather_forecast" />
+        <action
+            android:id="@+id/action_mainPageFragment_to_blog"
+            app:destination="@+id/navigation_blog" />
+        <action
+            android:id="@+id/action_mainPageFragment_to_profile"
+            app:destination="@+id/navigation_profile" />
+        <action
+            android:id="@+id/action_mainPageFragment_to_navigation_air_condition"
+            app:destination="@id/navigation_air_condition" />
+        <action
+            android:id="@+id/action_mainPageFragment_to_navigation_create_report"/>
+        <action
+            android:id="@+id/action_mainPageFragment_to_navigation_suggs_and_reps"
+            app:destination="@id/navigation_suggs_and_reps" />
+        <action
+            android:id="@+id/action_mainPageFragment_to_suggestionsAndReportsDetailFragment"
+            app:destination="@id/suggestionsAndReportsDetailFragment" />
+        <action
+            android:id="@+id/action_mainPageFragment_to_blogDetailFragment"
+            app:destination="@id/blogDetailFragment" />
+        <action
+            android:id="@+id/action_mainPageFragment_to_weatherForWeekFragment"
+            app:destination="@id/weatherForWeekFragment" />
+        <action
+            android:id="@+id/action_mainPageFragment_to_authenticationFragment"
+            app:destination="@id/authenticationFragment" />
+    </fragment>
+
+    <fragment
+        android:label="@string/suggestions_and_reports_page_title"
+        android:id="@+id/suggestionsAndReportsDetailFragment"
+        android:name="kz.invoice.app.ui.my_suggestions_and_reports.detail_page.MySuggestionsAndReportsDetailFragment"
+        tools:layout="@layout/fragment_my_suggestions_and_reports_detail"
+        >
+        <argument
+            android:name="item"
+            app:argType="kz.invoice.app.data.models.my_suggestions_and_reports.MySuggestionsAndReports" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/blogDetailFragment"
+        android:name="kz.invoice.app.ui.blog.detail.BlogDetailFragment"
+        android:label="@string/blog_page_title">
+        <argument
+            android:name="item"
+            app:argType="kz.invoice.app.data.models.blog.Blog" />
+    </fragment>
+
+    <include app:graph="@navigation/news" />
+    <include app:graph="@navigation/faq" />
+    <include app:graph="@navigation/weather_forecast" />
+    <include app:graph="@navigation/blog" />
+    <include app:graph="@navigation/profile" />
+    <include app:graph="@navigation/air_condition" />
+    <include app:graph="@navigation/create_form" />
+    <include app:graph="@navigation/suggs_and_reps" />
+    <fragment
+        android:id="@+id/weatherForWeekFragment"
+        android:name="kz.invoice.app.ui.weather_for_week.WeatherForWeekFragment"
+        android:label="@string/weather_page_title"
+        tools:layout="@layout/fragment_weather_for_week"/>
+
+    <fragment
+        android:id="@+id/authenticationFragment"
+        android:name="kz.invoice.app.ui.auth_type.authentication.AuthenticationFragment"
+        android:label="@string/profile_page_title"
+        tools:layout="@layout/fragment_authentication">
+        <action
+            android:id="@+id/action_authenticationFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_authenticationFragment_to_resetPasswordFragment"
+            app:destination="@id/resetPasswordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="kz.invoice.app.ui.auth_type.registration.RegistrationFragment"
+        android:label="@string/profile_page_title"
+        tools:layout="@layout/fragment_registration">
+        <action
+            android:id="@+id/action_registrationFragment_to_authenticationFragment"
+            app:destination="@id/authenticationFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="kz.invoice.app.ui.auth_type.reset_password.ResetPasswordFragment"
+        android:label="@string/profile_page_title"
+        tools:layout="@layout/fragment_reset_password" >
+        <action
+            android:id="@+id/action_resetPasswordFragment_to_codeVerificationFragment"
+            app:destination="@id/codeVerificationFragment" />
+        <action
+            android:id="@+id/action_resetPasswordFragment_to_authenticationFragment"
+            app:destination="@id/authenticationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/codeVerificationFragment"
+        android:name="kz.invoice.app.ui.auth_type.verification_code.CodeVerificationFragment"
+        android:label="@string/profile_page_title"
+        tools:layout="@layout/fragment_code_verification" >
+        <action
+            android:id="@+id/action_codeVerificationFragment_to_savePasswordFragment"
+            app:destination="@id/savePasswordFragment" />
+        <action
+            android:id="@+id/action_codeVerificationFragment_to_authenticationFragment"
+            app:destination="@id/authenticationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/savePasswordFragment"
+        android:name="kz.invoice.app.ui.auth_type.save_password.SavePasswordFragment"
+        android:label="@string/profile_page_title"
+        tools:layout="@layout/fragment_save_password">
+        <action
+            android:id="@+id/action_savePasswordFragment_to_authenticationFragment"
+            app:destination="@id/authenticationFragment" />
+    </fragment>
+</navigation>

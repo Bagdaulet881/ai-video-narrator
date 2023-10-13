@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="cornerRadius">4dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+
+    </style>
+
+    <style name="ButtonStyle.Primary" parent="ButtonStyle">
+        <item name="backgroundTint">@color/selector_btn_primary</item>
+        <item name="cornerRadius">0dp</item>
+    </style>
+
+    <style name="ButtonStyle.Accent" parent="ButtonStyle">
+        <item name="backgroundTint">@color/colorAccent</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/dp_16</item>
+        <item name="android:paddingTop">@dimen/dp_18</item>
+        <item name="android:paddingBottom">@dimen/dp_18</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="ButtonStyle.Accent.Rounded" parent="ButtonStyle">
+        <item name="backgroundTint">@color/colorAccent</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/dp_16</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:paddingTop">@dimen/dp_18</item>
+        <item name="android:paddingBottom">@dimen/dp_18</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="ButtonStyle.White.Rounded" parent="ButtonStyle">
+        <item name="backgroundTint">@color/F3F4F6</item>
+        <item name="android:paddingLeft">@dimen/dp_17</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/dp_16</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:paddingTop">@dimen/dp_14</item>
+        <item name="android:paddingBottom">@dimen/dp_14</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="ButtonStyle.AccentWhite" parent="ButtonStyle">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/dp_16</item>
+        <item name="android:paddingTop">@dimen/dp_18</item>
+        <item name="android:paddingBottom">@dimen/dp_18</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="ButtonStyle.White" parent="ButtonStyle">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/dp_16</item>
+        <item name="android:paddingTop">@dimen/dp_18</item>
+        <item name="android:paddingBottom">@dimen/dp_18</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+
+    <style name="ButtonStyle.Rounded" parent="ButtonStyle">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/sp_12</item>
+        <item name="cornerRadius">@dimen/dp_40</item>
+        <item name="android:paddingTop">@dimen/dp_10</item>
+        <item name="android:paddingBottom">@dimen/dp_10</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="ButtonStyle.Rounded.MainPage" parent="ButtonStyle">
+        <item name="backgroundTint">@color/grey</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/sp_12</item>
+        <item name="cornerRadius">@dimen/dp_40</item>
+        <item name="android:paddingTop">@dimen/dp_10</item>
+        <item name="android:paddingBottom">@dimen/dp_10</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="ButtonStyle.Rounded.Pollutions" parent="ButtonStyle">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/sp_12</item>
+        <item name="android:background">@drawable/button_style_pollutions_selector</item>
+        <item name="cornerRadius">@dimen/dp_40</item>
+        <item name="android:paddingTop">@dimen/dp_10</item>
+        <item name="android:paddingBottom">@dimen/dp_10</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="ButtonStyle.Rounded.Collections" parent="ButtonStyle">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/sp_12</item>
+        <item name="android:background">@drawable/button_style_collections_selector</item>
+        <item name="cornerRadius">@dimen/dp_40</item>
+        <item name="android:paddingTop">@dimen/dp_10</item>
+        <item name="android:paddingBottom">@dimen/dp_10</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="ButtonStyle.Rounded.Blue" parent="ButtonStyle">
+        <item name="backgroundTint">@color/colorAccent</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/sp_12</item>
+        <item name="cornerRadius">@dimen/dp_40</item>
+        <item name="android:paddingTop">@dimen/dp_14</item>
+        <item name="android:paddingBottom">@dimen/dp_14</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="TextButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+        <!--<item name="android:paddingTop">16dp</item>-->
+        <!--<item name="android:paddingBottom">16dp</item>-->
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="OutlinedButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textSize">@dimen/sp_11</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="cornerRadius">15dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_splash"
+    app:startDestination="@+id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="kz.invoice.app.ui.splash.SplashFragment"
+        android:label=""
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_splashFragment_to_onboardViewPagerFragment"
+            app:destination="@id/onboardViewPagerFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_navigation_auth_type"
+            app:destination="@id/navigation_auth_type" />
+    </fragment>
+    <fragment
+        android:id="@+id/onboardViewPagerFragment"
+        android:name="kz.invoice.app.ui.onboard.OnboardViewPagerFragment"
+        android:label="OnboardViewPagerFragment">
+        <action
+            android:id="@+id/action_onboardViewPagerFragment_to_navigation_auth_type"
+            app:destination="@id/navigation_auth_type" />
+    </fragment>
+    <include app:graph="@navigation/auth_type" />
+
+</navigation>

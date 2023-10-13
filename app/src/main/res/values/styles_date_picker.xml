@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="DatePickerDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:datePickerStyle">@style/DatePickerStyle</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/TextButtonStyle</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/TextButtonStyle</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/TextButtonStyle</item>
+    </style>
+
+    <style name="DatePickerStyle" parent="@android:style/Widget.Material.DatePicker">
+        <item name="android:datePickerMode">spinner</item>
+        <item name="android:calendarViewShown">false</item>
+        <item name="android:colorControlNormal">@color/colorPrimary</item>
+    </style>
+
+</resources>
