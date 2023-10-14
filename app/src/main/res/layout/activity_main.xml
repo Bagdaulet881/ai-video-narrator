@@ -55,6 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@color/white"
+                android:visibility="invisible"
                 app:itemIconTint="@drawable/selector_bottom_navigation"
                 app:itemTextColor="@drawable/selector_bottom_navigation"
                 app:menu="@menu/bottom_navigation_menu"
