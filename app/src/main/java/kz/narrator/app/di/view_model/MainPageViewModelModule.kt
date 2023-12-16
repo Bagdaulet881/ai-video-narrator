@@ -5,6 +5,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 import kz.narrator.app.di.view_model.base.ViewModelKey
+import kz.narrator.app.ui.attach_files.AttachFilesViewModel
 import kz.narrator.app.ui.main_page.MainPageViewModel
 
 @Module
@@ -14,6 +15,11 @@ abstract class MainPageViewModelModule {
     @IntoMap
     @ViewModelKey(MainPageViewModel::class)
     abstract fun bindMainPageViewModel(viewModel: MainPageViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AttachFilesViewModel::class)
+    abstract fun bindAttachFilesViewModel(viewModel: AttachFilesViewModel): ViewModel
 
 
 }

@@ -33,21 +33,44 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/backgroundColor"
-                app:visibleGone="@{viewModel.weatherStatus == Status.SUCCESS}">
-<!--                app:visibleGone="@{viewModel.status == Status.SUCCESS || viewModel.statusByLocation == Status.SUCCESS}">-->
+                android:background="@color/backgroundColor">
 
-                <TextView
+                <ImageView
+                    android:id="@+id/iv_attach_file"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hello, World!"
-                    android:textSize="@dimen/sp_16"
-                    android:textStyle="bold"
-                    android:layout_marginTop="300dp"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_marginBottom="@dimen/dp_6"
+                    android:onClick="@{() -> viewModel.onAttachFileBtnClick()}"
+                    android:paddingStart="@dimen/dp_6"
+                    android:paddingTop="@dimen/dp_6"
+                    android:paddingBottom="@dimen/dp_6"
+                    app:srcCompat="@drawable/ic_add_photo" />
 
+                <ImageView
+                    android:id="@+id/iv_send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/iv_attach_file"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_marginBottom="@dimen/dp_6"
+                    android:onClick="@{() -> viewModel.onSendImageBtnClick()}"
+                    android:paddingStart="@dimen/dp_6"
+                    android:paddingTop="@dimen/dp_6"
+                    android:tint="@color/red"
+                    android:paddingBottom="@dimen/dp_6"
+                    app:srcCompat="@drawable/ic_camera" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -8,10 +8,7 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Base64
 import android.webkit.MimeTypeMap
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.UnsupportedEncodingException
+import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,6 +37,49 @@ object Base64Utils {
             "\n",
             ""
         )
+    }
+
+    fun convertToBase64(context: Context, fileUri: Uri): String? {
+        var inputStream: InputStream? = null
+        var outputStream: ByteArrayOutputStream? = null
+        var base64: String? = null
+        try {
+            inputStream = context.contentResolver.openInputStream(fileUri)
+            outputStream = ByteArrayOutputStream()
+            val buffer = ByteArray(1024)
+            var len: Int
+            while (inputStream?.read(buffer).also { len = it ?:0 } != -1) {
+                outputStream.write(buffer, 0, len)
+            }
+            base64 = Base64.encodeToString(outputStream.toByteArray(), Base64.NO_WRAP)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            try {
+                inputStream?.close()
+                outputStream?.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        return base64
+//        return Base64.encodeToString(attachment.readBytes(), Base64.NO_WRAP)
+    }
+
+    fun getFileNameFromUri(context: Context, uri: Uri): String? {
+        val contentResolver = context.contentResolver
+        val cursor = contentResolver.query(uri, null, null, null, null)
+
+        return try {
+            if (cursor != null && cursor.moveToFirst()) {
+                val displayNameColumnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                cursor.getString(displayNameColumnIndex)
+            } else {
+                null
+            }
+        } finally {
+            cursor?.close()
+        }
     }
 
     fun getMimeType(context: Context, uri: Uri): String {

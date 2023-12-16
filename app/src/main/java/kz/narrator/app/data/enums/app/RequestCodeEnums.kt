@@ -29,5 +29,6 @@ enum class RequestCodeEnums(val id: Int) {
     LOCATION_PERMISSION_REQUEST_CODE(1016),
 
     SELECT_POLLUTANT(1017),
+    PICK_IMAGE_OR_FILE(1018),
 
 }
