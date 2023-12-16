@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="kz.invoice.app.ui.splash.SplashFragment"
+        android:name="kz.narrator.app.ui.splash.SplashFragment"
         android:label=""
         tools:layout="@layout/fragment_splash">
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/onboardViewPagerFragment"
-        android:name="kz.invoice.app.ui.onboard.OnboardViewPagerFragment"
+        android:name="kz.narrator.app.ui.onboard.OnboardViewPagerFragment"
         android:label="OnboardViewPagerFragment">
         <action
             android:id="@+id/action_onboardViewPagerFragment_to_navigation_auth_type"

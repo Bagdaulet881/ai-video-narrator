@@ -4,11 +4,11 @@
 
     <data>
 
-        <import type="kz.invoice.app.ui.activities.splash.SplashViewModel" />
+        <import type="kz.narrator.app.ui.activities.splash.SplashViewModel" />
 
         <variable
             name="viewModel"
-            type="kz.invoice.app.ui.activities.splash.SplashViewModel" />
+            type="kz.narrator.app.ui.activities.splash.SplashViewModel" />
 
     </data>
 

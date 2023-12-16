@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">InvoiceTest</string>
+    <string name="app_name">narratorTest</string>
 
     <string name="no_data">Нет данных для отображения</string>
     <string name="title_activity_maps">Map</string>

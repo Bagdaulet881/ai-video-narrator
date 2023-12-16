@@ -16,7 +16,7 @@ android {
     compileSdkVersion 33
     buildToolsVersion "30.0.3"
     defaultConfig {
-        applicationId "kz.invoice.app"
+        applicationId "kz.narrator.app"
         minSdkVersion 21
         targetSdkVersion 33
         versionCode 11
@@ -38,19 +38,19 @@ android {
     productFlavors {
         dev {
             dimension "default"
-            applicationId "kz.invoice.app"
+            applicationId "kz.narrator.app"
             buildConfigField "String", "URL_BASE", '"https://example.com/api/"'
             buildConfigField "boolean", "IS_DEBUG", "true"
-            buildConfigField "String", "FILE_PROVIDER", '"kz.invoice.app.dev.fileprovider"'
-            manifestPlaceholders = [manifestFileProvider: "kz.invoice.app.dev.fileprovider"]
+            buildConfigField "String", "FILE_PROVIDER", '"kz.narrator.app.dev.fileprovider"'
+            manifestPlaceholders = [manifestFileProvider: "kz.narrator.app.dev.fileprovider"]
         }
         prod {
             dimension "default"
-            applicationId "kz.invoice.app"
+            applicationId "kz.narrator.app"
             buildConfigField "String", "URL_BASE", '"https://example.com/api/"'
             buildConfigField "boolean", "IS_DEBUG", "true"
-            buildConfigField "String", "FILE_PROVIDER", '"kz.invoice.app.fileprovider"'
-            manifestPlaceholders = [manifestFileProvider: "kz.invoice.app.fileprovider"]
+            buildConfigField "String", "FILE_PROVIDER", '"kz.narrator.app.fileprovider"'
+            manifestPlaceholders = [manifestFileProvider: "kz.narrator.app.fileprovider"]
         }
     }
 

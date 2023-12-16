@@ -5,11 +5,11 @@
 
     <data>
 
-        <import type="kz.invoice.app.data.models.network.Resource" />
+        <import type="kz.narrator.app.data.models.network.Resource" />
 
-        <import type="kz.invoice.app.data.models.network.Status" />
+        <import type="kz.narrator.app.data.models.network.Status" />
 
-        <import type="kz.invoice.app.ui.main_page.MainPageViewModel" />
+        <import type="kz.narrator.app.ui.main_page.MainPageViewModel" />
 
         <variable
             name="viewModel"

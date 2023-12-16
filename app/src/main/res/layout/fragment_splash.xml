@@ -3,7 +3,7 @@
 
     <data>
 
-        <import type="kz.invoice.app.ui.splash.SplashViewModel" />
+        <import type="kz.narrator.app.ui.splash.SplashViewModel" />
 
         <variable
             name="viewModel"

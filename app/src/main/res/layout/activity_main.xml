@@ -4,7 +4,7 @@
 
     <data>
 
-        <import type="kz.invoice.app.ui.activities.main.MainViewModel" />
+        <import type="kz.narrator.app.ui.activities.main.MainViewModel" />
 
         <variable
             name="viewModel"
