@@ -14,6 +14,7 @@ import kz.narrator.app.databinding.FragmentMainPageBinding
 import kz.narrator.app.ui.attach_files.AttachFilesUtils
 import kz.narrator.app.ui.attach_files.AttachFilesViewModel
 import kz.narrator.app.ui_common.base.BaseFragment
+import kz.narrator.app.utils.file.FileUtils.playAudioFromFile
 
 class MainPageFragment : BaseFragment() {
 
@@ -67,6 +68,14 @@ class MainPageFragment : BaseFragment() {
         viewModel.setAttachFilesCallback(attachFilesUtils.attachFilesViewModel.attachFilesCallback)
 
         viewModel.apply {
+            playAudio.observe(
+                viewLifecycleOwner,
+                Observer {
+                    it.getContentIfNotHandled()?.let {
+                        playAudioFromFile(requireContext(), it)
+                    }
+                }
+            )
             openAiResource.observe(
                 viewLifecycleOwner,
                 Observer {

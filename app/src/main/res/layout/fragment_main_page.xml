@@ -36,6 +36,36 @@
                 android:background="@color/backgroundColor">
 
                 <ImageView
+                    android:id="@+id/iv_play_audio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/iv_attach_file"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="@dimen/dp_8"
+                    app:visibleGone="@{viewModel.audioPlayerVisible}"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_marginBottom="@dimen/dp_6"
+                    android:onClick="@{() -> viewModel.onPlayAudioBtnClick()}"
+                    android:paddingStart="@dimen/dp_6"
+                    android:paddingTop="@dimen/dp_6"
+                    android:paddingBottom="@dimen/dp_6"
+                    app:srcCompat="@drawable/ic_paper_plus" />
+
+                <SeekBar
+                    android:id="@+id/volSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
                     android:id="@+id/iv_attach_file"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -65,7 +95,7 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginTop="@dimen/dp_6"
                     android:layout_marginBottom="@dimen/dp_6"
-                    android:onClick="@{() -> viewModel.generateAudioRequest()}"
+                    android:onClick="@{() -> viewModel.onSendImageBtnClick()}"
                     android:paddingStart="@dimen/dp_6"
                     android:paddingTop="@dimen/dp_6"
                     app:tint="@color/red"

@@ -15,7 +15,7 @@ class OpenAiInstance
 
     val openAiConfig = OpenAIConfig(
         token = openAiKey,
-        timeout = Timeout(socket = 15.seconds),
+        timeout = Timeout(socket = 60.seconds),
         // additional configurations...
     )
 

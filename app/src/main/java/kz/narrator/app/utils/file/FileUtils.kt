@@ -16,6 +16,8 @@ import android.webkit.MimeTypeMap
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
+import android.media.MediaPlayer
+import java.io.File
 
 
 object FileUtils {
@@ -23,6 +25,29 @@ object FileUtils {
     fun getName(): String {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         return "name_${timeStamp}_"
+    }
+
+
+    fun playAudioFromFile(context: Context, fileName: String) {
+        try {
+            val file = File(context.filesDir, fileName)
+            if (file.exists()) {
+                val mediaPlayer = MediaPlayer().apply {
+                    setDataSource(file.path)
+                    prepare() // Prepare the MediaPlayer asynchronously (for streams)
+                    start() // Start playing
+                }
+
+                // Optional: Release the MediaPlayer once it's done playing
+                mediaPlayer.setOnCompletionListener {
+                    it.release()
+                }
+            } else {
+                // Handle file not found
+            }
+        } catch (e: Exception) {
+            // Handle exceptions
+        }
     }
 
     @Throws(IOException::class)
