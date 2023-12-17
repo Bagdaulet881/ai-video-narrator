@@ -65,13 +65,24 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginTop="@dimen/dp_6"
                     android:layout_marginBottom="@dimen/dp_6"
-                    android:onClick="@{() -> viewModel.onSendImageBtnClick()}"
+                    android:onClick="@{() -> viewModel.onTestRequest()}"
                     android:paddingStart="@dimen/dp_6"
                     android:paddingTop="@dimen/dp_6"
-                    android:tint="@color/red"
+                    app:tint="@color/red"
                     android:paddingBottom="@dimen/dp_6"
                     app:srcCompat="@drawable/ic_camera" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="response from AI"
+                    android:textColor="@color/white"
+                    android:text="@{viewModel.responseFieldText}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_attach_file"
+                    style="@style/Font.Medium"
+                    android:textSize="16sp" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>

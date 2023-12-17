@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import kz.narrator.app.R
+import kz.narrator.app.data.models.network.Status
 import kz.narrator.app.databinding.FragmentMainPageBinding
 import kz.narrator.app.ui.attach_files.AttachFilesUtils
 import kz.narrator.app.ui.attach_files.AttachFilesViewModel
@@ -64,6 +65,29 @@ class MainPageFragment : BaseFragment() {
 
     private fun observeViewModel() {
         viewModel.setAttachFilesCallback(attachFilesUtils.attachFilesViewModel.attachFilesCallback)
+
+        viewModel.apply {
+            openAiResource.observe(
+                viewLifecycleOwner,
+                Observer {
+                    it.getContentIfNotHandled()?.let {
+                        when (it.status) {
+                            Status.SUCCESS -> {
+                                onOpenAiResourceSuccess(it.data)
+                                dismissProgressDialog()
+                            }
+                            Status.ERROR -> {
+                                handleExceptionView(it.exception)
+                                dismissProgressDialog()
+                            }
+                            Status.LOADING -> {
+                                showProgressDialog()
+                            }
+                        }
+                    }
+                }
+            )
+        }
     }
 
 

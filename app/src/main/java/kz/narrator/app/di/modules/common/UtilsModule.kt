@@ -2,6 +2,7 @@ package kz.narrator.app.di.modules.common
 
 import dagger.Module
 import dagger.Provides
+import kz.narrator.app.data.openai.OpenAiInstance
 import kz.narrator.app.data.preferences.Preferences
 import kz.narrator.app.network.utils.HeaderUtils
 import kz.narrator.app.network.utils.UniqueID
@@ -17,5 +18,9 @@ class UtilsModule {
     @Provides
     @Singleton
     fun provideHeaderUtils(preferences: Preferences, uniqueID: UniqueID) = HeaderUtils(preferences, uniqueID)
+
+    @Provides
+    @Singleton
+    fun provideOpenAiInstance() = OpenAiInstance()
 
 }

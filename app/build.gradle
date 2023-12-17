@@ -227,4 +227,9 @@ dependencies {
     //onesignal
 //    implementation 'com.onesignal:OneSignal:3.11.4'
 
+
+    //OPEN_AI
+    implementation "com.aallam.openai:openai-client:3.6.2"
+    // Ktor client for Android
+    implementation "io.ktor:ktor-client-android:2.3.0"
 }

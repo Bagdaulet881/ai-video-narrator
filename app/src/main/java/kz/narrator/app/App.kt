@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.res.Configuration
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDex
+import com.aallam.openai.api.http.Timeout
+import com.aallam.openai.client.OpenAI
+import com.aallam.openai.client.OpenAIConfig
 //import com.onesignal.OneSignal
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -16,6 +19,7 @@ import kz.narrator.app.di.utils.AppInjector
 //import kz.narrator.app.one_signal.handler.AppNotificationHandler
 import kz.narrator.app.utils.locale.LocaleUtils
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 class App : Application(), HasAndroidInjector {
 
@@ -26,8 +30,10 @@ class App : Application(), HasAndroidInjector {
     lateinit var lifecycleListener: ApplicationObserver
 
 //    @Inject
-//    lateinit var appNotificationOpenedHandler: AppNotificationOpenedHandler
+//    lateinit var openAiInstance: OpenAI
 
+    //    @Inject
+//    lateinit var appNotificationOpenedHandler: AppNotificationOpenedHandler
     override fun onCreate() {
         super.onCreate()
         AppInjector.init(this)
@@ -36,14 +42,6 @@ class App : Application(), HasAndroidInjector {
             .lifecycle
             .addObserver(lifecycleListener)
 
-//        OneSignal.startInit(this)
-//            .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
-//            .unsubscribeWhenNotificationsAreDisabled(true)
-//            .setNotificationOpenedHandler(appNotificationOpenedHandler)
-//            .setNotificationReceivedHandler(AppNotificationReceivedHandler())
-//            .init()
-//          TODO получить токен и передать в бэк
-//        AppNotificationHandler.uniqueToken = OneSignal.getPermissionSubscriptionState()?.subscriptionStatus?.userId
     }
 
     override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
