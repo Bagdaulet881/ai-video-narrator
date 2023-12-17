@@ -87,6 +87,27 @@ class MainPageFragment : BaseFragment() {
                     }
                 }
             )
+
+            audioAiResource.observe(
+                viewLifecycleOwner,
+                Observer {
+                    it.getContentIfNotHandled()?.let {
+                        when (it.status) {
+                            Status.SUCCESS -> {
+                                onAudioFileResourceSuccess(it.data)
+                                dismissProgressDialog()
+                            }
+                            Status.ERROR -> {
+                                handleExceptionView(it.exception)
+                                dismissProgressDialog()
+                            }
+                            Status.LOADING -> {
+                                showProgressDialog()
+                            }
+                        }
+                    }
+                }
+            )
         }
     }
 

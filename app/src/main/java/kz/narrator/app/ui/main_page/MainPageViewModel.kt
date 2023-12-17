@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.aallam.openai.api.chat.*
 import com.aallam.openai.api.model.ModelId
+import kz.narrator.app.data.models.AudioRequestPayload
 import kz.narrator.app.data.models.custom.Scan
 import kz.narrator.app.data.openai.OpenAiInstance
 import kz.narrator.app.data.preferences.Preferences
@@ -92,6 +93,29 @@ class MainPageViewModel
 //        }
     }
 
+    /**
+     * Test ElevenLabs
+     */
+    private val generateAudio = MutableLiveData<AudioRequestPayload>()
+
+    val audioAiResource = Transformations.switchMap(generateAudio) {
+        openAiRepositiry.generateAudio(voiceId = getVoiceParams(), text = it)
+    }
+
+    fun onAudioFileResourceSuccess(filePath: String?){
+        Log.i("MSG", "AUDIOSAVED: path = ${filePath}")
+    }
+
+    fun generateAudioRequest(){
+        val testText = "Hello, ohh you are testing my voice from android!"
+
+        val payload = AudioRequestPayload(
+//            model_id = "your_model_id",
+            text = testText
+        )
+
+        generateAudio.postValue(payload)
+    }
     fun onOpenAiResourceSuccess(data: ChatCompletion?) {
         val text = data?.choices?.get(0)
         Log.i("MSG", "SENDREQUEST: ${text}")
@@ -127,4 +151,10 @@ class MainPageViewModel
         attachFilesCallback.onAttachFileBtnClick()
     }
 
+    //-----------------------------------
+    fun getVoiceParams(): String {
+        val voiceIdDavied: String = "y0DmfPiJ6oiErY1xHRE1"
+
+        return voiceIdDavied
+    }
 }
