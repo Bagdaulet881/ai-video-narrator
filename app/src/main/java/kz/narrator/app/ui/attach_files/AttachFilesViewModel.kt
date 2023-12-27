@@ -39,6 +39,10 @@ class AttachFilesViewModel
     private val images = mutableListOf<Scan>()
     private var allMedia = mutableListOf<Any>()
 
+    private val _mediaSelected = MutableLiveData<Event<Unit>>()
+    val mediaSelected: LiveData<Event<Unit>>
+        get() = _mediaSelected
+
     /**
      * Permission
      */
@@ -170,7 +174,7 @@ class AttachFilesViewModel
                 allMedia.add(it)
             }
         }
-
+        if(allMedia.isNotEmpty()) _mediaSelected.postValue(Event(Unit))
 //        _adapterImages.postValue(temp)
     }
 

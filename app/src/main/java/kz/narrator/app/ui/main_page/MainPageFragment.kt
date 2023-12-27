@@ -11,6 +11,9 @@ import androidx.lifecycle.Observer
 import kz.narrator.app.R
 import kz.narrator.app.data.models.network.Status
 import kz.narrator.app.databinding.FragmentMainPageBinding
+import kz.narrator.app.ui.ai_processor.image_analyze.ImageAnalyzerViewModel
+import kz.narrator.app.ui.ai_processor.text_to_speech.TextToSpeechViewModel
+import kz.narrator.app.ui.ai_processor.video_crop.VideoCropViewModel
 import kz.narrator.app.ui.attach_files.AttachFilesUtils
 import kz.narrator.app.ui.attach_files.AttachFilesViewModel
 import kz.narrator.app.ui_common.base.BaseFragment
@@ -20,6 +23,11 @@ class MainPageFragment : BaseFragment() {
 
     private lateinit var binding: FragmentMainPageBinding
     private lateinit var viewModel: MainPageViewModel
+    private lateinit var videoCropViewModel: VideoCropViewModel
+    private lateinit var ivAnalyzerViewModel: ImageAnalyzerViewModel
+    private lateinit var textSpeechViewModel: TextToSpeechViewModel
+    private lateinit var attachFilesViewModel: AttachFilesViewModel
+
     private lateinit var attachFilesUtils: AttachFilesUtils
 
     override fun onCreateView(
@@ -43,39 +51,60 @@ class MainPageFragment : BaseFragment() {
         viewModel = getViewModel(MainPageViewModel::class.java)
         binding.viewModel = viewModel
 
+        initAndObserveAttachFileViewModel()
+
         attachFilesUtils = AttachFilesUtils(
-            context = context!!,
-            activity = activity!!,
+            context = requireContext(),
+            activity = requireActivity(),
             fragment = this,
             lifecycleOwner = viewLifecycleOwner,
-            attachFilesViewModel = getViewModel(AttachFilesViewModel::class.java)
+            attachFilesViewModel = attachFilesViewModel
         )
 
-        initAndObserveAttachFilesViewModel()
+
+        initAndObserveVideoCropViewModel()
+        initAndObserveImageAnalyzerViewModel()
+        initAndObserveTextSpeechViewModel()
+
         observeViewModel()
     }
 
-    private fun initAndObserveAttachFilesViewModel() {
-//        attachFilesUtils.attachFilesViewModel.adapterImagesWithAdd.observe(
-//            viewLifecycleOwner,
-//            Observer {
-//                (binding.recyclerView.adapter as CommentAdapter).submitList(it)
-//            }
-//        )
-    }
+    private fun initAndObserveAttachFileViewModel(){
+        attachFilesViewModel = getViewModel(AttachFilesViewModel::class.java)
 
-    private fun observeViewModel() {
-        viewModel.setAttachFilesCallback(attachFilesUtils.attachFilesViewModel.attachFilesCallback)
-
-        viewModel.apply {
-            playAudio.observe(
+        attachFilesViewModel.apply {
+            mediaSelected.observe(
                 viewLifecycleOwner,
                 Observer {
                     it.getContentIfNotHandled()?.let {
-                        playAudioFromFile(requireContext(), it)
+                        videoCropViewModel.mediaSelected()
                     }
                 }
             )
+        }
+    }
+
+    private fun initAndObserveVideoCropViewModel(){
+        videoCropViewModel = getViewModel(VideoCropViewModel::class.java)
+        videoCropViewModel.setAttachFilesCallback(attachFilesUtils.attachFilesViewModel.attachFilesCallback)
+
+        videoCropViewModel.apply {
+            selectedMediaFrame.observe(
+                viewLifecycleOwner,
+                Observer {
+                    it.getContentIfNotHandled()?.let {
+                        binding.ivAttachFile.setImageBitmap(it)
+                    }
+                }
+            )
+        }
+    }
+
+    private fun initAndObserveImageAnalyzerViewModel(){
+        ivAnalyzerViewModel = getViewModel(ImageAnalyzerViewModel::class.java)
+        ivAnalyzerViewModel.setAttachFilesCallback(attachFilesUtils.attachFilesViewModel.attachFilesCallback)
+
+        ivAnalyzerViewModel.apply {
             openAiResource.observe(
                 viewLifecycleOwner,
                 Observer {
@@ -96,7 +125,13 @@ class MainPageFragment : BaseFragment() {
                     }
                 }
             )
+        }
+    }
 
+    private fun initAndObserveTextSpeechViewModel(){
+        textSpeechViewModel = getViewModel(TextToSpeechViewModel::class.java)
+
+        textSpeechViewModel.apply {
             audioAiResource.observe(
                 viewLifecycleOwner,
                 Observer {
@@ -114,6 +149,21 @@ class MainPageFragment : BaseFragment() {
                                 showProgressDialog()
                             }
                         }
+                    }
+                }
+            )
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.setAttachFilesCallback(attachFilesUtils.attachFilesViewModel.attachFilesCallback)
+
+        viewModel.apply {
+            playAudio.observe(
+                viewLifecycleOwner,
+                Observer {
+                    it.getContentIfNotHandled()?.let {
+                        playAudioFromFile(requireContext(), it)
                     }
                 }
             )

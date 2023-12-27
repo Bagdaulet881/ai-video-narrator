@@ -232,6 +232,9 @@ dependencies {
     implementation "com.aallam.openai:openai-client:3.6.2"
     // Ktor client for Android
     implementation "io.ktor:ktor-client-android:2.3.0"
+
     //mediaPlayer
 //    implementation 'com.devbrackets.android:exomedia:5.1.0'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.19.1'
+
 }
