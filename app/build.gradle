@@ -235,6 +235,7 @@ dependencies {
 
     //mediaPlayer
 //    implementation 'com.devbrackets.android:exomedia:5.1.0'
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.19.1'
+    implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
+
 
 }

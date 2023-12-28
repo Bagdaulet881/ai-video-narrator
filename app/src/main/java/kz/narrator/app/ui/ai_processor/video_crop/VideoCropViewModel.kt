@@ -22,6 +22,10 @@ class VideoCropViewModel
     val selectedMediaFrame: LiveData<Event<Bitmap>>
         get() = _selectedMediaFrame
 
+    private val _selectedMediaUri = MutableLiveData<Event<Uri>>()
+    val selectedMediaUri: LiveData<Event<Uri>>
+        get() = _selectedMediaUri
+
     /**
      *
      */
@@ -34,7 +38,9 @@ class VideoCropViewModel
     fun mediaSelected(){
         val listOfMedia = attachFilesCallback.getAttachedFiles()
         if(listOfMedia.isNotEmpty()){
-            getFrame((listOfMedia.get(0) as Scan).uri)
+            val mediaUri = (listOfMedia.get(0) as Scan).uri
+            getFrame(mediaUri)
+            _selectedMediaUri.postValue(Event(mediaUri))
         }
     }
 

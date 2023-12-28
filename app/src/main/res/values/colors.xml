@@ -20,6 +20,8 @@
     <color name="chartAwful">#7e0023</color>
 
     <!---->
+    <color name="bg_peach_edit">#F3ECD9</color>
+
 
     <!---->
     <color name="switchThumbChecked">@color/white</color>

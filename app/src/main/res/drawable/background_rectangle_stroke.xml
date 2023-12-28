@@ -1,0 +1,6 @@
+<!-- res/drawable/rectangle_border.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#00FFFFFF"/> <!-- Transparent background -->
+    <stroke android:width="2dp" android:color="#5E3926"/> <!-- Black border -->
+    <!-- No corner radius means sharp corners -->
+</shape>

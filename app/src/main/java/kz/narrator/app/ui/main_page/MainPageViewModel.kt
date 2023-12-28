@@ -29,6 +29,8 @@ class MainPageViewModel
     val playAudio: LiveData<Event<String>>
         get() = _playAudio
 
+    val isMediaEditVisible = MutableLiveData<Boolean>(false) //TODO 881
+
     /**
      *
      */
@@ -38,6 +40,9 @@ class MainPageViewModel
         this.attachFilesCallback = callback
     }
 
+    fun setMediaAttachedStatus(isAttached: Boolean){
+        isMediaEditVisible.postValue(isAttached)
+    }
     //-----------------------------------
     /**
      *BtnClickListeners
