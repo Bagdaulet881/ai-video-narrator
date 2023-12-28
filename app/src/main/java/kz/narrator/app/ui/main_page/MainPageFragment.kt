@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import kz.narrator.app.R
 import kz.narrator.app.data.models.network.Status
 import kz.narrator.app.databinding.FragmentMainPageBinding
+import kz.narrator.app.ui.activities.main.MainActivity
 import kz.narrator.app.ui.ai_processor.image_analyze.ImageAnalyzerViewModel
 import kz.narrator.app.ui.ai_processor.text_to_speech.TextToSpeechViewModel
 import kz.narrator.app.ui.ai_processor.video_crop.VideoCropViewModel
@@ -48,7 +49,7 @@ class MainPageFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = getViewModel(MainPageViewModel::class.java)
+        viewModel = getViewModelOfActivity(MainPageViewModel::class.java)
         binding.viewModel = viewModel
 
         initAndObserveAttachFileViewModel()
@@ -93,7 +94,7 @@ class MainPageFragment : BaseFragment() {
                 viewLifecycleOwner,
                 Observer {
                     it.getContentIfNotHandled()?.let {
-                        binding.ivAttachFile.setImageBitmap(it)
+//                        binding.ivAttachFile.setImageBitmap(it)
                     }
                 }
             )
