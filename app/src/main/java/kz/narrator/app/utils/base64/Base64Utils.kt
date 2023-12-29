@@ -9,6 +9,7 @@ import android.provider.OpenableColumns
 import android.util.Base64
 import android.util.Log
 import android.webkit.MimeTypeMap
+import kz.narrator.app.data.enums.app.DatePatternEnums
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,6 +19,11 @@ object Base64Utils {
     fun getName(): String {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         return "name_${timeStamp}_"
+    }
+
+    fun getAudioFileName(): String {
+        val timeStamp = SimpleDateFormat(DatePatternEnums.yyyyMMdd_HHmmss.id, Locale.getDefault()).format(Date())
+        return "audio_name_${timeStamp}"
     }
 
     fun getBase64(context: Context, uri: Uri): String? {

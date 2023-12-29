@@ -11,8 +11,10 @@ import kz.narrator.app.network.api.AiApi
 import kz.narrator.app.utils.live_data.Event
 import javax.inject.Inject
 import android.content.Context
+import android.util.Log
 import kz.narrator.app.data.models.ai_data.AudioRequestPayload
 import kz.narrator.app.data.repository.error_handler.RepositoryErrorHandler
+import kz.narrator.app.utils.base64.Base64Utils
 import okhttp3.ResponseBody
 import java.io.File
 import java.io.FileOutputStream
@@ -54,10 +56,12 @@ class OpenAiRepositiryImpl
                 val request = aiApi.generateAudio(voiceId = voiceId, textBody = text)
                 with(request){
                     if(request.isSuccessful){
-                        val filePath = body()?.let { saveAudioFile(it, fileName = "audioText.mp3") }
+                        val fileName = "${Base64Utils.getAudioFileName()}.mp3"
+                        val filePath = body()?.let { saveAudioFile(it, fileName = fileName) }
+                        Log.i("MSG", "AUDIOSAVED:2 path = ${filePath}")
 
                         emit(
-                            Event(Resource.success(filePath))
+                            Event(Resource.success(fileName))
                         )
                     }else{
                         emit(

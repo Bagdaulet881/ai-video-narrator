@@ -35,6 +35,39 @@
                 android:layout_height="match_parent"
                 android:background="@color/backgroundColor">
 
+                <TextView
+                    android:id="@+id/tv_file"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="audio found"
+                    app:layout_constraintBottom_toTopOf="@id/btn_test"
+                    app:layout_constraintEnd_toEndOf="@id/btn_test"
+                    app:layout_constraintStart_toStartOf="@id/btn_test" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_test"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewModel.onTestAudioBtnClick()}"
+                    android:text="TEST_AUDIO"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_audio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewModel.onTestAudio2BtnClick()}"
+                    android:text="CREATE_AUDIO"
+                    android:textColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btn_test"
+                    />
+
                 <include
                     android:id="@+id/include_media_edit"
                     layout="@layout/view_media_edit"
@@ -61,7 +94,7 @@
                     android:layout_height="0dp"
                     app:constraint_referenced_ids="include_media_edit, include_media_frame"
                     app:visibleGone="@{viewModel.isMediaEditVisible()}"
-                    tools:visibility="visible" />
+                    tools:visibility="gone" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>

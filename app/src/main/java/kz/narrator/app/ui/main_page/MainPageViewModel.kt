@@ -81,7 +81,7 @@ class MainPageViewModel
         override fun onImageAnalyzed(analyzedText: String) {
             Log.i("MSG", "BIG_LOGGER: onImageAnalyzed ${analyzedText}")
             analyzedTextData.postValue(analyzedText)
-//            _runVoiceLab.postValue(Event(Unit)) //TODO 881 uncomment
+            _runVoiceLab.postValue(Event(Unit))
         }
 
         override fun getCroppedImages(): List<Bitmap> {
@@ -145,5 +145,18 @@ class MainPageViewModel
 
     fun onAttachFileBtnClick() {
         attachFilesCallback.onAttachFileBtnClick()
+    }
+
+    fun onTestAudioBtnClick(){
+//        val fileName = "testAudioFile.mp3"
+        val fileName = "audio_name_20231230_035237.mp3"
+
+        _playAudio.postValue(Event(fileName))
+    }
+    fun onTestAudio2BtnClick(){
+        val text = "Hi from Android Agaaaain!"
+
+        analyzedTextData.postValue(text)
+        _runVoiceLab.postValue(Event(Unit))
     }
 }

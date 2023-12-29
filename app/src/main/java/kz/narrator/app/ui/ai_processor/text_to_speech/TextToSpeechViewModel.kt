@@ -21,9 +21,6 @@ class TextToSpeechViewModel
     private val appealRepository: AppealRepository,
     private val preferences: Preferences
 ) : AndroidViewModel(app){
-    val audioFilePath = MutableLiveData<String>("audioText.mp3")
-    val audioPlayerVisible = MutableLiveData<Boolean>(true)
-
     /**
      *
      */
@@ -42,22 +39,22 @@ class TextToSpeechViewModel
         openAiRepositiry.generateAudio(voiceId = getVoiceParams(), text = it)
     }
 
-    fun onAudioFileResourceSuccess(filePath: String?){
-        audioFilePath.value = filePath?:""
-        audioPlayerVisible.value = true
-        Log.i("MSG", "AUDIOSAVED: path = ${filePath}")
+    fun onAudioFileResourceSuccess(fileName: String?){
+        mainCallback.onTextToVoice(fileName?:"")
+        Log.i("MSG", "AUDIOSAVED: path = ${fileName}")
     }
 
     fun onRun(){
+        val text = mainCallback.getAnalyzedText()
 
+        generateAudioRequest(text)
     }
 
-    fun generateAudioRequest(){
-        val testText = "Hello, ohh you are testing my voice from android!"
+    fun generateAudioRequest(text: String) {
 
         val payload = AudioRequestPayload(
 //            model_id = "your_model_id",
-            text = testText
+            text = text
         )
 
         generateAudio.postValue(payload)

@@ -8,6 +8,7 @@ enum class DatePatternEnums(val id: String) {
     DDMMYYYY_BY_PERIOD("dd.MM.yyyy"),
     MMSS_BY_COLON("mm:ss"),
 
-    DATE_FOR_PROFILE("dd MMM yyyyг.")
+    DATE_FOR_PROFILE("dd MMM yyyyг."),
+    yyyyMMdd_HHmmss("yyyyMMdd_HHmmss")
 
 }

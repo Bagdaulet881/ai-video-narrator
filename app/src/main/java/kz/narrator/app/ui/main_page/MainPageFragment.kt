@@ -24,6 +24,7 @@ import kz.narrator.app.ui.attach_files.AttachFilesUtils
 import kz.narrator.app.ui.attach_files.AttachFilesViewModel
 import kz.narrator.app.ui_common.base.BaseFragment
 import kz.narrator.app.utils.file.FileUtils.playAudioFromFile
+import java.io.File
 
 class MainPageFragment : BaseFragment() {
 
@@ -64,7 +65,10 @@ class MainPageFragment : BaseFragment() {
         viewModel = getViewModelOfActivity(MainPageViewModel::class.java)
         playerView = binding.includeMediaEdit.playerView
         binding.viewModel = viewModel
-
+        ///
+        val file = File(requireContext().filesDir, "audio_name_20231230_035237.mp3")
+        binding.tvFile.text = "FILE FOUND STATUS ${file.exists()}"
+        ///
         initAndObserveAttachFileViewModel()
         attachFilesUtils = AttachFilesUtils(
             context = requireContext(),
@@ -110,7 +114,7 @@ class MainPageFragment : BaseFragment() {
     }
 
     private fun releasePlayer() {
-        if(this::exoPlayer.isInitialized){
+        if (this::exoPlayer.isInitialized) {
             isPlayerPlaying = exoPlayer.playWhenReady
             playbackPosition = exoPlayer.currentPosition
             currentWindow = exoPlayer.currentMediaItemIndex
@@ -118,7 +122,7 @@ class MainPageFragment : BaseFragment() {
         }
     }
 
-    private fun initAndObserveAttachFileViewModel(){
+    private fun initAndObserveAttachFileViewModel() {
         attachFilesViewModel = getViewModel(AttachFilesViewModel::class.java)
 
         attachFilesViewModel.apply {
@@ -133,7 +137,7 @@ class MainPageFragment : BaseFragment() {
         }
     }
 
-    private fun initAndObserveVideoCropViewModel(){
+    private fun initAndObserveVideoCropViewModel() {
         videoCropViewModel = getViewModel(VideoCropViewModel::class.java)
 
         videoCropViewModel.apply {
@@ -141,7 +145,7 @@ class MainPageFragment : BaseFragment() {
         }
     }
 
-    private fun initAndObserveImageAnalyzerViewModel(){
+    private fun initAndObserveImageAnalyzerViewModel() {
         ivAnalyzerViewModel = getViewModel(ImageAnalyzerViewModel::class.java)
 
         ivAnalyzerViewModel.apply {
@@ -168,7 +172,7 @@ class MainPageFragment : BaseFragment() {
         }
     }
 
-    private fun initAndObserveTextSpeechViewModel(){
+    private fun initAndObserveTextSpeechViewModel() {
         textSpeechViewModel = getViewModel(TextToSpeechViewModel::class.java)
 
         textSpeechViewModel.apply {
@@ -282,7 +286,7 @@ class MainPageFragment : BaseFragment() {
 
     override fun onPause() {
         super.onPause()
-        if(Build.VERSION.SDK_INT <= 23) {
+        if (Build.VERSION.SDK_INT <= 23) {
             playerView.onPause()
             releasePlayer()
         }
@@ -290,14 +294,15 @@ class MainPageFragment : BaseFragment() {
 
     override fun onStop() {
         super.onStop()
-        if(Build.VERSION.SDK_INT > 23) {
+        if (Build.VERSION.SDK_INT > 23) {
             playerView.onPause()
             releasePlayer()
         }
     }
 
     companion object {
-        const val HLS_STATIC_URL = "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8"
+        const val HLS_STATIC_URL =
+            "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8"
         const val STATE_RESUME_WINDOW = "resumeWindow"
         const val STATE_RESUME_POSITION = "resumePosition"
         const val STATE_PLAYER_FULLSCREEN = "playerFullscreen"
