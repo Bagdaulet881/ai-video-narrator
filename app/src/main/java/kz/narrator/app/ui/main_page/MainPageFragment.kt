@@ -12,12 +12,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import kz.narrator.app.R
 import kz.narrator.app.data.models.network.Status
 import kz.narrator.app.databinding.FragmentMainPageBinding
-import kz.narrator.app.ui.activities.main.MainActivity
 import kz.narrator.app.ui.ai_processor.image_analyze.ImageAnalyzerViewModel
 import kz.narrator.app.ui.ai_processor.text_to_speech.TextToSpeechViewModel
 import kz.narrator.app.ui.ai_processor.video_crop.VideoCropViewModel
@@ -90,6 +89,22 @@ class MainPageFragment : BaseFragment() {
             setMediaItem(MediaItem.fromUri(mediaUri))
             prepare()
         }
+
+        exoPlayer.addListener(object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == Player.STATE_READY || playbackState == Player.STATE_BUFFERING) {
+                    viewModel.setPlaybackCurrentPosition(exoPlayer.currentPosition)
+                }
+            }
+
+            override fun onPositionDiscontinuity(
+                oldPosition: Player.PositionInfo,
+                newPosition: Player.PositionInfo,
+                reason: Int
+            ) {
+                viewModel.setPlaybackCurrentPosition(exoPlayer.currentPosition)
+            }
+        })
         playerView.player = exoPlayer
         binding.includeMediaEdit.spvControllers.player = exoPlayer
     }
@@ -112,7 +127,6 @@ class MainPageFragment : BaseFragment() {
                 Observer {
                     it.getContentIfNotHandled()?.let {
                         viewModel.setMediaAttachedStatus(true)
-                        videoCropViewModel.mediaSelected()
                     }
                 }
             )
@@ -121,32 +135,14 @@ class MainPageFragment : BaseFragment() {
 
     private fun initAndObserveVideoCropViewModel(){
         videoCropViewModel = getViewModel(VideoCropViewModel::class.java)
-        videoCropViewModel.setAttachFilesCallback(attachFilesUtils.attachFilesViewModel.attachFilesCallback)
 
         videoCropViewModel.apply {
-            selectedMediaFrame.observe(
-                viewLifecycleOwner,
-                Observer {
-                    it.getContentIfNotHandled()?.let {
-//                        binding.ivAttachFile.setImageBitmap(it)
-                    }
-                }
-            )
 
-            selectedMediaUri.observe(
-                viewLifecycleOwner,
-                Observer {
-                    it.getContentIfNotHandled()?.let {
-                        initPlayer(it)
-                    }
-                }
-            )
         }
     }
 
     private fun initAndObserveImageAnalyzerViewModel(){
         ivAnalyzerViewModel = getViewModel(ImageAnalyzerViewModel::class.java)
-        ivAnalyzerViewModel.setAttachFilesCallback(attachFilesUtils.attachFilesViewModel.attachFilesCallback)
 
         ivAnalyzerViewModel.apply {
             openAiResource.observe(
@@ -203,6 +199,42 @@ class MainPageFragment : BaseFragment() {
         viewModel.setAttachFilesCallback(attachFilesUtils.attachFilesViewModel.attachFilesCallback)
 
         viewModel.apply {
+            runVideoPlayer.observe(
+                viewLifecycleOwner,
+                Observer {
+                    it.getContentIfNotHandled()?.let {
+                        initPlayer(it)
+                    }
+                }
+            )
+
+            runVoiceLab.observe(
+                viewLifecycleOwner,
+                Observer {
+                    it.getContentIfNotHandled()?.let {
+                        textSpeechViewModel.onRun()
+                    }
+                }
+            )
+
+            runOpenAi.observe(
+                viewLifecycleOwner,
+                Observer {
+                    it.getContentIfNotHandled()?.let {
+                        ivAnalyzerViewModel.onRun()
+                    }
+                }
+            )
+
+            runVideoCrop.observe(
+                viewLifecycleOwner,
+                Observer {
+                    it.getContentIfNotHandled()?.let {
+                        videoCropViewModel.onRun()
+                    }
+                }
+            )
+
             playAudio.observe(
                 viewLifecycleOwner,
                 Observer {
@@ -212,6 +244,10 @@ class MainPageFragment : BaseFragment() {
                 }
             )
         }
+
+        videoCropViewModel.setMainMediaCallback(viewModel.mainAnalyzeCallback)
+        ivAnalyzerViewModel.setMainMediaCallback(viewModel.mainAnalyzeCallback)
+        textSpeechViewModel.setMainMediaCallback(viewModel.mainAnalyzeCallback)
     }
 
 

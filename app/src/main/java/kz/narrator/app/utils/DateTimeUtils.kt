@@ -22,3 +22,14 @@ fun convertDateToString(date: Date, pattern: String): String {
     val sdf = SimpleDateFormat(pattern)
     return sdf.format(date)
 }
+
+fun formatTime(milliseconds: Long): String {
+    val minutes = (milliseconds / 1000) / 60
+    val seconds = (milliseconds / 1000) % 60
+    val millis = milliseconds % 1000
+    return String.format("%02d:%02d:%03d", minutes, seconds, millis)
+}
+
+fun convertToMicroseconds(milliseconds: Long): Long {
+    return milliseconds * 1000
+}

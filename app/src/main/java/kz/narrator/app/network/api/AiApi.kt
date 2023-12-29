@@ -1,6 +1,6 @@
 package kz.narrator.app.network.api
 
-import kz.narrator.app.data.models.AudioRequestPayload
+import kz.narrator.app.data.models.ai_data.AudioRequestPayload
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*

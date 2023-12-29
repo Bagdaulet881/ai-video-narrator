@@ -11,7 +11,7 @@ import kz.narrator.app.network.api.AiApi
 import kz.narrator.app.utils.live_data.Event
 import javax.inject.Inject
 import android.content.Context
-import kz.narrator.app.data.models.AudioRequestPayload
+import kz.narrator.app.data.models.ai_data.AudioRequestPayload
 import kz.narrator.app.data.repository.error_handler.RepositoryErrorHandler
 import okhttp3.ResponseBody
 import java.io.File

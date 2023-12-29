@@ -14,6 +14,7 @@ import kz.narrator.app.data.preferences.Preferences
 import kz.narrator.app.data.repository.ai_repos.OpenAiRepositiry
 import kz.narrator.app.data.repository.appeal.AppealRepository
 import kz.narrator.app.ui.attach_files.AttachFilesCallback
+import kz.narrator.app.ui_common.callbacks.MainMediaCallback
 import kz.narrator.app.utils.base64.Base64Utils
 import javax.inject.Inject
 
@@ -29,12 +30,15 @@ class ImageAnalyzerViewModel
     /**
      *
      */
-    private lateinit var attachFilesCallback: AttachFilesCallback
+    private lateinit var mainCallback: MainMediaCallback
 
-    fun setAttachFilesCallback(callback: AttachFilesCallback) {
-        this.attachFilesCallback = callback
+    fun setMainMediaCallback(callback: MainMediaCallback) {
+        this.mainCallback = callback
     }
 
+    fun onRun(){
+        generateChatGptRequest()
+    }
     /**
      * Test OpenAi
      */
@@ -64,33 +68,13 @@ class ImageAnalyzerViewModel
                 content = text?.message?.content
             )
         )
+        mainCallback.onImageAnalyzed(text?.message?.content?:"")
         responseFieldText.postValue(text?.message?.content)
     }
 
     /**
      *
      */
-    fun onAnalyzeBtnClick() { //MAIN RUN
-        if (attachFilesCallback.getAttachedFiles().isNotEmpty()) {
-            val test = getImageParams()
-            Log.i("MSG", "SENDBTNCLICK: ${test.size}")
-            Log.i("MSG", "SENDBTNCLICK: ${test.get(0).uri}")
-
-            generateChatGptRequest()
-        }
-    }
-
-
-    fun getImageParams(): List<Scan> {
-        val temp = mutableListOf<Scan>()
-        attachFilesCallback.getAttachedFiles().forEach {
-            if (it is Scan) {
-                temp.add(it)
-            }
-        }
-
-        return temp.toList()
-    }
 
     fun getScriptParams(): MutableList<ChatMessage> {
         val requestScripts = mutableListOf<ChatMessage>()
@@ -116,7 +100,7 @@ class ImageAnalyzerViewModel
 
     fun getChatGPTParams(): List<ContentPart> {
         val commands = mutableListOf<ContentPart>()
-        val attachedImages = getImageParams()
+        val attachedImages = mainCallback.getCroppedImages()
         commands.add(
             TextPart(
                 text = "Describe this image"
@@ -127,11 +111,15 @@ class ImageAnalyzerViewModel
                 imageUrl = ImagePart.ImageURL(
 //                    url = "data:image/jpeg;base64,\"${convertImageToBase64(app.applicationContext, attachedImages.get(0).uri)}\"".replace("\n", "")
                     url = "data:image/jpeg;base64,${
-                        Base64Utils.getBase64(
-                            app.applicationContext,
-                            attachedImages.get(0).uri
-                        )
+                        Base64Utils.convertToBase64(attachedImages.get(0))
                     }"
+                    //if error then use getSmallBitmap
+//                    "data:image/jpeg;base64,${
+//                        Base64Utils.getBase64(
+//                            app.applicationContext,
+//                            attachedImages.get(0).uri
+//                        )
+//                    }"
                 )
             )
         )

@@ -5,11 +5,12 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import kz.narrator.app.data.models.AudioRequestPayload
+import kz.narrator.app.data.models.ai_data.AudioRequestPayload
 import kz.narrator.app.data.openai.OpenAiInstance
 import kz.narrator.app.data.preferences.Preferences
 import kz.narrator.app.data.repository.ai_repos.OpenAiRepositiry
 import kz.narrator.app.data.repository.appeal.AppealRepository
+import kz.narrator.app.ui_common.callbacks.MainMediaCallback
 import javax.inject.Inject
 
 class TextToSpeechViewModel
@@ -20,13 +21,22 @@ class TextToSpeechViewModel
     private val appealRepository: AppealRepository,
     private val preferences: Preferences
 ) : AndroidViewModel(app){
+    val audioFilePath = MutableLiveData<String>("audioText.mp3")
+    val audioPlayerVisible = MutableLiveData<Boolean>(true)
+
+    /**
+     *
+     */
+    private lateinit var mainCallback: MainMediaCallback
+
+    fun setMainMediaCallback(callback: MainMediaCallback) {
+        this.mainCallback = callback
+    }
 
     /**
      * Test ElevenLabs
      */
     private val generateAudio = MutableLiveData<AudioRequestPayload>()
-    val audioFilePath = MutableLiveData<String>("audioText.mp3")
-    val audioPlayerVisible = MutableLiveData<Boolean>(true)
 
     val audioAiResource = Transformations.switchMap(generateAudio) {
         openAiRepositiry.generateAudio(voiceId = getVoiceParams(), text = it)
@@ -36,6 +46,10 @@ class TextToSpeechViewModel
         audioFilePath.value = filePath?:""
         audioPlayerVisible.value = true
         Log.i("MSG", "AUDIOSAVED: path = ${filePath}")
+    }
+
+    fun onRun(){
+
     }
 
     fun generateAudioRequest(){

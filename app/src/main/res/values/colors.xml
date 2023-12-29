@@ -21,6 +21,9 @@
 
     <!---->
     <color name="bg_peach_edit">#F3ECD9</color>
+    <color name="accentColorRetro">#5E3926</color>
+    <color name="btnColorRetro">#FDF5D1</color>
+    <color name="btnTextColorRetro">#63342A</color>
 
 
     <!---->

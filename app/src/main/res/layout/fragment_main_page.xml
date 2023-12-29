@@ -39,17 +39,27 @@
                     android:id="@+id/include_media_edit"
                     layout="@layout/view_media_edit"
                     android:layout_width="match_parent"
-                    app:layout_constraintTop_toTopOf="parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_20"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:viewModel="@{viewModel}" />
+
+                <include
+                    android:id="@+id/include_media_frame"
+                    layout="@layout/view_media_frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_20"
+                    app:layout_constraintTop_toBottomOf="@id/include_media_edit"
                     app:viewModel="@{viewModel}" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/group_media_edit"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    app:constraint_referenced_ids="include_media_edit"
+                    app:constraint_referenced_ids="include_media_edit, include_media_frame"
                     app:visibleGone="@{viewModel.isMediaEditVisible()}"
                     tools:visibility="visible" />
             </androidx.constraintlayout.widget.ConstraintLayout>
