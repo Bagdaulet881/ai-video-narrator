@@ -10,10 +10,12 @@ import androidx.lifecycle.MutableLiveData
 import kz.narrator.app.data.models.ai_data.MediaFileInfo
 import kz.narrator.app.data.models.custom.Scan
 import kz.narrator.app.ui.attach_files.AttachFilesCallback
+import kz.narrator.app.ui_common.callbacks.FFMpegCallback
 import kz.narrator.app.ui_common.callbacks.MainMediaCallback
 import kz.narrator.app.utils.convertToMicroseconds
 import kz.narrator.app.utils.formatTime
 import kz.narrator.app.utils.live_data.Event
+import java.io.File
 import javax.inject.Inject
 
 class MainPageViewModel
@@ -45,6 +47,10 @@ class MainPageViewModel
     private val _runResultScreen = MutableLiveData<Event<Unit>>()
     val runResultScreen: LiveData<Event<Unit>>
         get() = _runResultScreen
+
+    private val _createVideo = MutableLiveData<Event<Unit>>()
+    val createVideo: LiveData<Event<Unit>>
+        get() = _createVideo
 
     val isMediaEditVisible = MutableLiveData<Boolean>(false)
     val currentFrameMsFieldText = MutableLiveData<String>()
@@ -124,10 +130,36 @@ class MainPageViewModel
     fun setMediaAttachedStatus(isAttached: Boolean){
         val media = attachFilesCallback.getAttachedFiles().get(0) as Scan
         attachedMedia.postValue(media)
-        _runVideoPlayer.postValue(Event(media.uri))
-        isMediaEditVisible.postValue(isAttached)
+        Log.i("MSG", "FFMPEG_LOG: media attached")
+        //TODO 881 UNCOMMENT, testing
+//        _runVideoPlayer.postValue(Event(media.uri))
+//        isMediaEditVisible.postValue(isAttached)
     }
     /**
+     *
+     */
+    val ffMpegCallback = object : FFMpegCallback {
+        override fun onProgress(progress: String) {
+            Log.i("MSG", "FFMPEG_LOG: onProgress ${progress}")
+        }
+
+        override fun onSuccess(convertedFile: File, type: String) {
+            Log.i("MSG", "FFMPEG_LOG: onSuccess ${type} ${convertedFile.path}")
+        }
+
+        override fun onFailure(error: Exception) {
+            Log.i("MSG", "FFMPEG_LOG: onFailure ${error.cause}")
+        }
+
+        override fun onNotAvailable(error: Exception) {
+            Log.i("MSG", "FFMPEG_LOG: onNotAvailable ${error.message}")
+        }
+
+        override fun onFinish() {
+            Log.i("MSG", "FFMPEG_LOG: onFinish")
+        }
+    }
+        /**
      * PlaybackListener
      */
     fun setPlaybackCurrentPosition(currentPosition: Long) {
@@ -158,5 +190,9 @@ class MainPageViewModel
 
         analyzedTextData.postValue(text)
         _runVoiceLab.postValue(Event(Unit))
+    }
+
+    fun onRunVideoBtnClick(){
+        _createVideo.postValue(Event(Unit))
     }
 }

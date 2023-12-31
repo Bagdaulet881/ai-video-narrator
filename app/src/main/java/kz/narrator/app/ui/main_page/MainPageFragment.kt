@@ -8,8 +8,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -23,7 +25,11 @@ import kz.narrator.app.ui.ai_processor.video_crop.VideoCropViewModel
 import kz.narrator.app.ui.attach_files.AttachFilesUtils
 import kz.narrator.app.ui.attach_files.AttachFilesViewModel
 import kz.narrator.app.ui_common.base.BaseFragment
+import kz.narrator.app.ui_common.video_tools.video.MovieMaker
+import kz.narrator.app.ui_common.video_tools.video.TextOnVideo
+import kz.narrator.app.utils.file.FileUtils
 import kz.narrator.app.utils.file.FileUtils.playAudioFromFile
+import kz.narrator.app.utils.file.VideoFileUtils
 import java.io.File
 
 class MainPageFragment : BaseFragment() {
@@ -36,6 +42,7 @@ class MainPageFragment : BaseFragment() {
     private lateinit var attachFilesViewModel: AttachFilesViewModel
 
     private lateinit var attachFilesUtils: AttachFilesUtils
+    lateinit var font: File
 
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerView: StyledPlayerView
@@ -130,6 +137,7 @@ class MainPageFragment : BaseFragment() {
                 viewLifecycleOwner,
                 Observer {
                     it.getContentIfNotHandled()?.let {
+                        font = VideoFileUtils.copyTTFFileToExternalStorage(R.font.roboto_black, "myFont.ttf", requireContext())
                         viewModel.setMediaAttachedStatus(true)
                     }
                 }
@@ -203,6 +211,47 @@ class MainPageFragment : BaseFragment() {
         viewModel.setAttachFilesCallback(attachFilesUtils.attachFilesViewModel.attachFilesCallback)
 
         viewModel.apply {
+            createVideo.observe(
+                viewLifecycleOwner,
+                Observer {
+                    it.getContentIfNotHandled()?.let {
+                        stopRunningProcess()
+
+                        if (!isRunning()) {
+                            viewModel.attachedMedia.value?.uri?.let {
+                                val file = FileUtils.getVideoFileFromUri(requireContext(), it)
+
+                                if (file != null){
+                                    TextOnVideo.with(requireContext())
+                                        .setFile(file)
+                                        .setOutputPath(VideoFileUtils.outputPath + "video")
+                                        .setOutputFileName("textOnVideo_asdasdTEST" + ".mp4")
+                                        .setFont(font) //Font .ttf of text
+                                        .setText("Text Displayed on Video!!") //Text to be displayed
+                                        .setColor("#50b90e") //Color of Text
+                                        .setSize("34") //Size of text
+                                        .addBorder(true) //This will add background with border on text
+                                        .setPosition(TextOnVideo.POSITION_CENTER_BOTTOM) //Can be selected
+                                        .setCallback(viewModel.ffMpegCallback)
+                                        .draw()
+                                }
+                            }
+
+//                            MovieMaker.with(requireContext())
+//                                .setAudio(FileUtils.getAudioFile(requireContext(), viewModel.audioFileNameData.value?:""))
+//                                .setOutputPath(VideoFileUtils.outputPath + "video")
+//                                .setOutputFileName("movie_" + System.currentTimeMillis() + ".mp4")
+//                                .setCallback(viewModel.ffMpegCallback)
+//                                .convert()
+
+//                            ProgressDialog.show(supportFragmentManager, MovieMaker.TAG)
+                        } else {
+                            showInProgressToast()
+                        }
+                    }
+                }
+            )
+
             runVideoPlayer.observe(
                 viewLifecycleOwner,
                 Observer {
@@ -307,5 +356,17 @@ class MainPageFragment : BaseFragment() {
         const val STATE_RESUME_POSITION = "resumePosition"
         const val STATE_PLAYER_FULLSCREEN = "playerFullscreen"
         const val STATE_PLAYER_PLAYING = "playerOnPlay"
+    }
+
+    private fun stopRunningProcess() {
+        FFmpeg.getInstance(requireContext()).killRunningProcesses()
+    }
+
+    private fun isRunning(): Boolean {
+        return FFmpeg.getInstance(requireContext()).isFFmpegCommandRunning
+    }
+
+    private fun showInProgressToast(){
+        Toast.makeText(requireContext(), "Operation already in progress! Try again in a while.", Toast.LENGTH_SHORT).show()
     }
 }

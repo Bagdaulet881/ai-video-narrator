@@ -4,8 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
@@ -33,6 +38,7 @@ class MainActivity : BaseActivity() {
 
     private lateinit var navController: NavController
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -44,6 +50,16 @@ class MainActivity : BaseActivity() {
         binding.viewModel = viewModel
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+
+        if (Environment.isExternalStorageManager()) {
+            // The app has been granted the MANAGE_EXTERNAL_STORAGE permission
+        } else {
+            // The app has not been granted the MANAGE_EXTERNAL_STORAGE permission
+            // Request the permission from the user
+            val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+            intent.data = Uri.parse("package:" + packageName)
+            startActivity(intent)
+        }
 
         initView()
     }

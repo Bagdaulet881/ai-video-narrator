@@ -50,6 +50,33 @@ object FileUtils {
         }
     }
 
+
+    fun getVideoFileFromUri(context: Context, uri: Uri): File? {
+        val contentResolver = context.contentResolver
+
+        return if (uri.scheme.equals("content", ignoreCase = true)) {
+            // Create a temporary file
+            val tempFile = File.createTempFile("temp_video", null, context.cacheDir)
+            tempFile.deleteOnExit()
+
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                FileOutputStream(tempFile).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+
+            tempFile
+        } else if (uri.scheme.equals("file", ignoreCase = true)) {
+            File(uri.path)
+        } else {
+            null
+        }
+    }
+
+    fun getAudioFile(context: Context, fileName: String): File {
+        return File(context.filesDir, fileName)
+    }
+
     @Throws(IOException::class)
     fun createImageFile(context: Context): File {
 

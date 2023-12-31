@@ -236,6 +236,8 @@ dependencies {
     //mediaPlayer
 //    implementation 'com.devbrackets.android:exomedia:5.1.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
-
+    //FFmpeg Library
+    implementation 'com.writingminds:FFmpegAndroid:0.3.2'
+    implementation 'org.jcodec:jcodec-android:0.1.9'
 
 }
