@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import com.github.hiteshsondhi88.libffmpeg.FFmpeg
+//import com.github.hiteshsondhi88.libffmpeg.FFmpeg
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -25,7 +25,6 @@ import kz.narrator.app.ui.ai_processor.video_crop.VideoCropViewModel
 import kz.narrator.app.ui.attach_files.AttachFilesUtils
 import kz.narrator.app.ui.attach_files.AttachFilesViewModel
 import kz.narrator.app.ui_common.base.BaseFragment
-import kz.narrator.app.ui_common.video_tools.video.MovieMaker
 import kz.narrator.app.ui_common.video_tools.video.TextOnVideo
 import kz.narrator.app.utils.file.FileUtils
 import kz.narrator.app.utils.file.FileUtils.playAudioFromFile
@@ -217,13 +216,13 @@ class MainPageFragment : BaseFragment() {
                     it.getContentIfNotHandled()?.let {
                         stopRunningProcess()
 
-                        if (!isRunning()) {
                             viewModel.attachedMedia.value?.uri?.let {
                                 val file = FileUtils.getVideoFileFromUri(requireContext(), it)
 
                                 if (file != null){
                                     TextOnVideo.with(requireContext())
                                         .setFile(file)
+                                        .setAudioFile(FileUtils.getAudioFile(requireContext(), viewModel.audioFileNameData.value?:""))
                                         .setOutputPath(VideoFileUtils.outputPath + "video")
                                         .setOutputFileName("textOnVideo_asdasdTEST" + ".mp4")
                                         .setFont(font) //Font .ttf of text
@@ -236,18 +235,6 @@ class MainPageFragment : BaseFragment() {
                                         .draw()
                                 }
                             }
-
-//                            MovieMaker.with(requireContext())
-//                                .setAudio(FileUtils.getAudioFile(requireContext(), viewModel.audioFileNameData.value?:""))
-//                                .setOutputPath(VideoFileUtils.outputPath + "video")
-//                                .setOutputFileName("movie_" + System.currentTimeMillis() + ".mp4")
-//                                .setCallback(viewModel.ffMpegCallback)
-//                                .convert()
-
-//                            ProgressDialog.show(supportFragmentManager, MovieMaker.TAG)
-                        } else {
-                            showInProgressToast()
-                        }
                     }
                 }
             )
@@ -359,12 +346,12 @@ class MainPageFragment : BaseFragment() {
     }
 
     private fun stopRunningProcess() {
-        FFmpeg.getInstance(requireContext()).killRunningProcesses()
+//        FFmpeg.getInstance(requireContext()).killRunningProcesses()
     }
 
-    private fun isRunning(): Boolean {
-        return FFmpeg.getInstance(requireContext()).isFFmpegCommandRunning
-    }
+//    private fun isRunning(): Boolean {
+//        return FFmpeg.getInstance(requireContext()).isFFmpegCommandRunning
+//    }
 
     private fun showInProgressToast(){
         Toast.makeText(requireContext(), "Operation already in progress! Try again in a while.", Toast.LENGTH_SHORT).show()

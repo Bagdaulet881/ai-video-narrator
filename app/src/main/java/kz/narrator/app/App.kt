@@ -9,9 +9,9 @@ import androidx.multidex.MultiDex
 import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
-import com.github.hiteshsondhi88.libffmpeg.FFmpeg
-import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException
+//import com.github.hiteshsondhi88.libffmpeg.FFmpeg
+//import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler
+//import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException
 //import com.onesignal.OneSignal
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -46,35 +46,35 @@ class App : Application(), HasAndroidInjector {
             .lifecycle
             .addObserver(lifecycleListener)
 
-        initFfmpeg()
+//        initFfmpeg()
     }
 
-    fun initFfmpeg(){
-        //Load FFMpeg library
-        try {
-            FFmpeg.getInstance(this).loadBinary(object : FFmpegLoadBinaryResponseHandler {
-                override fun onFailure() {
-                    Log.e("FFMpeg", "Failed to load FFMpeg library.")
-                }
-
-                override fun onSuccess() {
-                    Log.i("FFMpeg", "FFMpeg Library loaded!")
-                }
-
-                override fun onStart() {
-                    Log.i("FFMpeg", "FFMpeg Started")
-                }
-
-                override fun onFinish() {
-                    Log.i("FFMpeg", "FFMpeg Stopped")
-                }
-            })
-        } catch (e: FFmpegNotSupportedException) {
-            e.printStackTrace()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
+//    fun initFfmpeg(){
+//        //Load FFMpeg library
+//        try {
+//            FFmpeg.getInstance(this).loadBinary(object : FFmpegLoadBinaryResponseHandler {
+//                override fun onFailure() {
+//                    Log.e("FFMpeg", "Failed to load FFMpeg library.")
+//                }
+//
+//                override fun onSuccess() {
+//                    Log.i("FFMpeg", "FFMpeg Library loaded!")
+//                }
+//
+//                override fun onStart() {
+//                    Log.i("FFMpeg", "FFMpeg Started")
+//                }
+//
+//                override fun onFinish() {
+//                    Log.i("FFMpeg", "FFMpeg Stopped")
+//                }
+//            })
+//        } catch (e: FFmpegNotSupportedException) {
+//            e.printStackTrace()
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+//    }
 
     override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
 
