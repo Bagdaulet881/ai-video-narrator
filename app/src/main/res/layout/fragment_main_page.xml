@@ -92,6 +92,17 @@
                     app:layout_constraintTop_toBottomOf="@id/btn_video"
                     />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_timestamp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GET_TIMESTAMPS"
+                    android:textColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btn_select"
+                    />
+
                 <include
                     android:id="@+id/include_media_edit"
                     layout="@layout/view_media_edit"

@@ -44,6 +44,9 @@ class TextOnVideo private constructor(private val context: Context) {
 
     fun setAudioFile(originalFiles: File): TextOnVideo {
         this.audio = originalFiles
+        Log.i("MSG", "FFMPEG_LOG: setAudioFile ${originalFiles}")
+        Log.i("MSG", "FFMPEG_LOG: setAudioFile ${originalFiles.exists()}")
+        Log.i("MSG", "FFMPEG_LOG: setAudioFile ${originalFiles.path} ${originalFiles.name}")
         return this
     }
 
@@ -138,6 +141,7 @@ class TextOnVideo private constructor(private val context: Context) {
             "-map",
             "1:a:0",
             "-shortest",
+            "-y",
             outputLocation.path
         )
 
@@ -145,9 +149,9 @@ class TextOnVideo private constructor(private val context: Context) {
             "-i", video!!.path, // Input video
             "-i", audio!!.path, // Input audio
             "-filter_complex",
-            "[0:v]drawtext=fontfile=${font!!.path}:text='$text':fontcolor=$color:fontsize=$size$border:$position[v];[v][1:a]overlay", // Text overlay and audio overlay
-            "-map", "0:v:0", // Map video from first input
-            "-map", "1:a:0", // Map audio from second input
+            "[0:v]drawtext=fontfile=${font!!.path}:text='$text':fontcolor=$color:fontsize=$size$border:$position[v]", // Text overlay
+            "-map", "[v]", // Map the video output from the filtergraph
+            "-map", "1:a", // Map audio from the second input
             "-c:v", "libx264", // Video codec
             "-c:a", "aac", // Audio codec
             "-strict", "experimental",
@@ -159,7 +163,7 @@ class TextOnVideo private constructor(private val context: Context) {
             Log.d("FFMPEG_LOG", "LOGGING: ${message.text}")
         })
 
-        val rc = FFmpeg.execute(cmdAudioOnVideo)
+        val rc = FFmpeg.execute(combinedCmd)
 
         if (rc == RETURN_CODE_SUCCESS) {
             Log.i("MSG", "FFMPEG_LOG: RETURN_CODE_SUCCESS ${outputLocation}")
@@ -169,6 +173,15 @@ class TextOnVideo private constructor(private val context: Context) {
             // Handle failure
         }
 
+        /**
+         * use like add string by forEach where wordList data is groupped by 7 word(max word) and replace 'group1 words' with 7 words and start_number is timeStart, end_number is when it dissappeared
+         * ffmpeg -i input.mp4 -vf \
+        "[0:v]drawtext=text='group1 words':start_number=group1_start:end_number=group1_end:fontfile=/path/to/font.ttf:fontsize=24:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2, \
+        drawtext=text='group2 words':start_number=group2_start:end_number=group2_end:fontfile=/path/to/font.ttf:fontsize=24:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2, \
+        ..." \
+        -codec:a copy output.mp4
+
+         */
     }
 
     companion object {

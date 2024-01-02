@@ -5,17 +5,22 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-//import com.github.hiteshsondhi88.libffmpeg.FFmpeg
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.StyledPlayerView
+import com.google.auth.oauth2.GoogleCredentials
+import com.google.cloud.speech.v1.*
+import com.google.protobuf.ByteString
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kz.narrator.app.R
 import kz.narrator.app.data.models.network.Status
 import kz.narrator.app.databinding.FragmentMainPageBinding
@@ -50,6 +55,16 @@ class MainPageFragment : BaseFragment() {
     private var isFullscreen = false
     private var isPlayerPlaying = true
 
+    private val speechClient: SpeechClient by lazy {
+        activity?.applicationContext?.resources?.openRawResource(R.raw.google_cloud_credentials)
+            .use {
+                SpeechClient.create(
+                    SpeechSettings.newBuilder()
+                        .setCredentialsProvider { GoogleCredentials.fromStream(it) }
+                        .build())
+            }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -72,7 +87,7 @@ class MainPageFragment : BaseFragment() {
         playerView = binding.includeMediaEdit.playerView
         binding.viewModel = viewModel
         ///
-        val file = File(requireContext().filesDir, "audio_name_20231230_035237.mp3")
+        val file = File(requireContext().filesDir, "audio_name_20240102_053427.mp3")
         binding.tvFile.text = "FILE FOUND STATUS ${file.exists()}"
         ///
         initAndObserveAttachFileViewModel()
@@ -90,6 +105,61 @@ class MainPageFragment : BaseFragment() {
         initAndObserveTextSpeechViewModel()
 
         observeViewModel()
+        binding.btnTimestamp.setOnClickListener {
+            initGoogleSpeechTimeStamp()
+        }
+    }
+
+    fun initGoogleSpeechTimeStamp() {
+        GlobalScope.launch {
+            analyze(
+                ByteString.copyFrom(
+                    FileUtils.getAudioFile(
+                        requireContext(),
+                        "audio_name_20240102_053427.mp3"
+                    ).readBytes()
+                )
+            )
+        }
+    }
+
+    private fun analyze(fileByteString: ByteString) {
+        val req = RecognizeRequest.newBuilder()
+            .setConfig(
+                RecognitionConfig.newBuilder()
+                    .setEncoding(RecognitionConfig.AudioEncoding.MP3)
+                    .setEnableWordTimeOffsets(true)
+                    .setLanguageCode("en-US")
+                    .setSampleRateHertz(16000)
+                    .build()
+            )
+            .setAudio(
+                RecognitionAudio.newBuilder()
+                    .setContent(fileByteString)
+                    .build()
+            )
+            .build()
+
+        val response = speechClient.recognize(req)
+
+        Log.d("MSG", "Response, count ${response.resultsCount}")
+        val results = response.resultsList
+        for (result in results) {
+            Log.d("MSG", "GOOGLE_MAIN_LOG: $results")
+
+            val alternative = result.getAlternativesList().get(0)
+            Log.d("MSG", "GOOGLE_MAIN_LOG2: $alternative")
+            Log.d("MSG", "GOOGLE_MAIN_LOG2: ${alternative.wordsList}")
+            val text = alternative.getTranscript()
+            Log.d("MSG", "Transcription: $text")
+
+            for (wordInfo in alternative.wordsList) {
+                val word = wordInfo.word
+                val startTime = wordInfo.startTime
+                val endTime = wordInfo.endTime
+                Log.d("MSG", "Word: $word (start: ${startTime.seconds}.${startTime.nanos}, end: ${endTime.seconds}.${endTime.nanos})")
+            }
+        }
     }
 
     private fun initPlayer(mediaUri: Uri) {
@@ -136,7 +206,11 @@ class MainPageFragment : BaseFragment() {
                 viewLifecycleOwner,
                 Observer {
                     it.getContentIfNotHandled()?.let {
-                        font = VideoFileUtils.copyTTFFileToExternalStorage(R.font.roboto_black, "myFont.ttf", requireContext())
+                        font = VideoFileUtils.copyTTFFileToExternalStorage(
+                            R.font.roboto_black,
+                            "myFont.ttf",
+                            requireContext()
+                        )
                         viewModel.setMediaAttachedStatus(true)
                     }
                 }
@@ -216,25 +290,31 @@ class MainPageFragment : BaseFragment() {
                     it.getContentIfNotHandled()?.let {
                         stopRunningProcess()
 
-                            viewModel.attachedMedia.value?.uri?.let {
-                                val file = FileUtils.getVideoFileFromUri(requireContext(), it)
+                        viewModel.attachedMedia.value?.uri?.let {
+                            val file = FileUtils.getVideoFileFromUri(requireContext(), it)
 
-                                if (file != null){
-                                    TextOnVideo.with(requireContext())
-                                        .setFile(file)
-                                        .setAudioFile(FileUtils.getAudioFile(requireContext(), viewModel.audioFileNameData.value?:""))
-                                        .setOutputPath(VideoFileUtils.outputPath + "video")
-                                        .setOutputFileName("textOnVideo_asdasdTEST" + ".mp4")
-                                        .setFont(font) //Font .ttf of text
-                                        .setText("Text Displayed on Video!!") //Text to be displayed
-                                        .setColor("#50b90e") //Color of Text
-                                        .setSize("34") //Size of text
-                                        .addBorder(true) //This will add background with border on text
-                                        .setPosition(TextOnVideo.POSITION_CENTER_BOTTOM) //Can be selected
-                                        .setCallback(viewModel.ffMpegCallback)
-                                        .draw()
-                                }
+                            if (file != null) {
+                                TextOnVideo.with(requireContext())
+                                    .setFile(file)
+//                                        .setAudioFile(FileUtils.getAudioFile(requireContext(), viewModel.audioFileNameData.value?:""))
+                                    .setAudioFile(
+                                        FileUtils.getAudioFile(
+                                            requireContext(),
+                                            "audio_name_20240102_053427.mp3"
+                                        )
+                                    )
+                                    .setOutputPath(VideoFileUtils.outputPath + "video")
+                                    .setOutputFileName("textOnVideo_asdasdTEST" + ".mp4")
+                                    .setFont(font) //Font .ttf of text
+                                    .setText("Text Displayed on Video!!") //Text to be displayed
+                                    .setColor("#50b90e") //Color of Text
+                                    .setSize("34") //Size of text
+                                    .addBorder(true) //This will add background with border on text
+                                    .setPosition(TextOnVideo.POSITION_NARRATING_TEXT) //Can be selected
+                                    .setCallback(viewModel.ffMpegCallback)
+                                    .draw()
                             }
+                        }
                     }
                 }
             )
@@ -353,7 +433,11 @@ class MainPageFragment : BaseFragment() {
 //        return FFmpeg.getInstance(requireContext()).isFFmpegCommandRunning
 //    }
 
-    private fun showInProgressToast(){
-        Toast.makeText(requireContext(), "Operation already in progress! Try again in a while.", Toast.LENGTH_SHORT).show()
+    private fun showInProgressToast() {
+        Toast.makeText(
+            requireContext(),
+            "Operation already in progress! Try again in a while.",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

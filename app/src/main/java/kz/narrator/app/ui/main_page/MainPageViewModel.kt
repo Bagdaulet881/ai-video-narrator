@@ -181,12 +181,12 @@ class MainPageViewModel
 
     fun onTestAudioBtnClick(){
 //        val fileName = "testAudioFile.mp3"
-        val fileName = "audio_name_20231230_035237.mp3"
+        val fileName = "audio_name_20240102_053427.mp3"
 
         _playAudio.postValue(Event(fileName))
     }
     fun onTestAudio2BtnClick(){
-        val text = "Hi from Android Agaaaain!"
+        val text = "Hi from Android Agaaaain! So im testing some audio timestamps from google cloud and creting a new audio, using our elevenlabs!"
 
         analyzedTextData.postValue(text)
         _runVoiceLab.postValue(Event(Unit))
