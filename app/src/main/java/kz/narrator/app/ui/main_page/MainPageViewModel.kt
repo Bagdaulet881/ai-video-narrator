@@ -7,11 +7,14 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kz.narrator.app.data.models.ai_data.MappedTimeStamps
 import kz.narrator.app.data.models.ai_data.MediaFileInfo
 import kz.narrator.app.data.models.custom.Scan
+import kz.narrator.app.data.models.network.Status
 import kz.narrator.app.ui.attach_files.AttachFilesCallback
 import kz.narrator.app.ui_common.callbacks.FFMpegCallback
 import kz.narrator.app.ui_common.callbacks.MainMediaCallback
+import kz.narrator.app.ui_common.callbacks.UILoggingCallback
 import kz.narrator.app.utils.convertToMicroseconds
 import kz.narrator.app.utils.formatTime
 import kz.narrator.app.utils.live_data.Event
@@ -121,6 +124,19 @@ class MainPageViewModel
     /**
      *
      */
+    val uiLoggingCallback = object : UILoggingCallback {
+        override fun onTimeStampSuccess(sentences: List<MappedTimeStamps>) {
+            Log.i("MSG", "MAIN_VM_UI_LOG: onTimeStampSuccess ${sentences}")
+        }
+
+        override fun onSpeechTimeStampLog(msg: String, status: Status) {
+            Log.i("MSG", "MAIN_VM_UI_LOG: ${msg}")
+        }
+
+    }
+    /**
+     *
+     */
     private lateinit var attachFilesCallback: AttachFilesCallback
 
     fun setAttachFilesCallback(callback: AttachFilesCallback) {
@@ -159,7 +175,10 @@ class MainPageViewModel
             Log.i("MSG", "FFMPEG_LOG: onFinish")
         }
     }
-        /**
+
+
+
+    /**
      * PlaybackListener
      */
     fun setPlaybackCurrentPosition(currentPosition: Long) {

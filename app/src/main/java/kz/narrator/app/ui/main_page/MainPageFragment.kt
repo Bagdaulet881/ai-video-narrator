@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,15 +15,12 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.StyledPlayerView
-import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.speech.v1.*
-import com.google.protobuf.ByteString
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kz.narrator.app.R
 import kz.narrator.app.data.models.network.Status
 import kz.narrator.app.databinding.FragmentMainPageBinding
 import kz.narrator.app.ui.ai_processor.image_analyze.ImageAnalyzerViewModel
+import kz.narrator.app.ui.ai_processor.speech_to_text.SpeechWithTimestamp
 import kz.narrator.app.ui.ai_processor.text_to_speech.TextToSpeechViewModel
 import kz.narrator.app.ui.ai_processor.video_crop.VideoCropViewModel
 import kz.narrator.app.ui.attach_files.AttachFilesUtils
@@ -55,15 +51,6 @@ class MainPageFragment : BaseFragment() {
     private var isFullscreen = false
     private var isPlayerPlaying = true
 
-    private val speechClient: SpeechClient by lazy {
-        activity?.applicationContext?.resources?.openRawResource(R.raw.google_cloud_credentials)
-            .use {
-                SpeechClient.create(
-                    SpeechSettings.newBuilder()
-                        .setCredentialsProvider { GoogleCredentials.fromStream(it) }
-                        .build())
-            }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,7 +73,7 @@ class MainPageFragment : BaseFragment() {
         viewModel = getViewModelOfActivity(MainPageViewModel::class.java)
         playerView = binding.includeMediaEdit.playerView
         binding.viewModel = viewModel
-        ///
+        ///test
         val file = File(requireContext().filesDir, "audio_name_20240102_053427.mp3")
         binding.tvFile.text = "FILE FOUND STATUS ${file.exists()}"
         ///
@@ -98,132 +85,28 @@ class MainPageFragment : BaseFragment() {
             lifecycleOwner = viewLifecycleOwner,
             attachFilesViewModel = attachFilesViewModel
         )
-
+        font = VideoFileUtils.copyTTFFileToExternalStorage(
+            R.font.roboto_black,
+            "myFont.ttf",
+            requireContext()
+        )
 
         initAndObserveVideoCropViewModel()
         initAndObserveImageAnalyzerViewModel()
         initAndObserveTextSpeechViewModel()
 
         observeViewModel()
+        ///test
         binding.btnTimestamp.setOnClickListener {
             initGoogleSpeechTimeStamp()
         }
+        ///
     }
 
     fun initGoogleSpeechTimeStamp() {
-        GlobalScope.launch {
-            analyze(
-                ByteString.copyFrom(
-                    FileUtils.getAudioFile(
-                        requireContext(),
-                        "audio_name_20240102_053427.mp3"
-                    ).readBytes()
-                )
-            )
-        }
-    }
-
-    private fun analyze(fileByteString: ByteString) {
-        val req = RecognizeRequest.newBuilder()
-            .setConfig(
-                RecognitionConfig.newBuilder()
-                    .setEncoding(RecognitionConfig.AudioEncoding.MP3)
-                    .setEnableWordTimeOffsets(true)
-                    .setLanguageCode("en-US")
-                    .setSampleRateHertz(16000)
-                    .build()
-            )
-            .setAudio(
-                RecognitionAudio.newBuilder()
-                    .setContent(fileByteString)
-                    .build()
-            )
-            .build()
-
-        val response = speechClient.recognize(req)
-
-        Log.d("MSG", "Response, count ${response.resultsCount}")
-        val results = response.resultsList
-        for (result in results) {
-            Log.d("MSG", "GOOGLE_MAIN_LOG: $results")
-
-            val alternative = result.getAlternativesList().get(0)
-            Log.d("MSG", "GOOGLE_MAIN_LOG2: $alternative")
-            Log.d("MSG", "GOOGLE_MAIN_LOG2: ${alternative.wordsList}")
-            val text = alternative.getTranscript()
-            Log.d("MSG", "Transcription: $text")
-
-            for (wordInfo in alternative.wordsList) {
-                val word = wordInfo.word
-                val startTime = wordInfo.startTime
-                val endTime = wordInfo.endTime
-                Log.d("MSG", "Word: $word (start: ${startTime.seconds}.${startTime.nanos}, end: ${endTime.seconds}.${endTime.nanos})")
-            }
-        }
-    }
-
-    private fun initPlayer(mediaUri: Uri) {
-        exoPlayer = ExoPlayer.Builder(requireContext()).build().apply {
-            playWhenReady = isPlayerPlaying
-            seekTo(currentWindow, playbackPosition)
-            setMediaItem(MediaItem.fromUri(mediaUri))
-            prepare()
-        }
-
-        exoPlayer.addListener(object : Player.Listener {
-            override fun onPlaybackStateChanged(playbackState: Int) {
-                if (playbackState == Player.STATE_READY || playbackState == Player.STATE_BUFFERING) {
-                    viewModel.setPlaybackCurrentPosition(exoPlayer.currentPosition)
-                }
-            }
-
-            override fun onPositionDiscontinuity(
-                oldPosition: Player.PositionInfo,
-                newPosition: Player.PositionInfo,
-                reason: Int
-            ) {
-                viewModel.setPlaybackCurrentPosition(exoPlayer.currentPosition)
-            }
-        })
-        playerView.player = exoPlayer
-        binding.includeMediaEdit.spvControllers.player = exoPlayer
-    }
-
-    private fun releasePlayer() {
-        if (this::exoPlayer.isInitialized) {
-            isPlayerPlaying = exoPlayer.playWhenReady
-            playbackPosition = exoPlayer.currentPosition
-            currentWindow = exoPlayer.currentMediaItemIndex
-            exoPlayer.release()
-        }
-    }
-
-    private fun initAndObserveAttachFileViewModel() {
-        attachFilesViewModel = getViewModel(AttachFilesViewModel::class.java)
-
-        attachFilesViewModel.apply {
-            mediaSelected.observe(
-                viewLifecycleOwner,
-                Observer {
-                    it.getContentIfNotHandled()?.let {
-                        font = VideoFileUtils.copyTTFFileToExternalStorage(
-                            R.font.roboto_black,
-                            "myFont.ttf",
-                            requireContext()
-                        )
-                        viewModel.setMediaAttachedStatus(true)
-                    }
-                }
-            )
-        }
-    }
-
-    private fun initAndObserveVideoCropViewModel() {
-        videoCropViewModel = getViewModel(VideoCropViewModel::class.java)
-
-        videoCropViewModel.apply {
-
-        }
+        SpeechWithTimestamp.with(requireActivity(), requireContext())
+            .setUILoggingCallback(viewModel.uiLoggingCallback)
+            .getTimeStamps("audio_name_20240102_053427.mp3")
     }
 
     private fun initAndObserveImageAnalyzerViewModel() {
@@ -288,8 +171,6 @@ class MainPageFragment : BaseFragment() {
                 viewLifecycleOwner,
                 Observer {
                     it.getContentIfNotHandled()?.let {
-                        stopRunningProcess()
-
                         viewModel.attachedMedia.value?.uri?.let {
                             val file = FileUtils.getVideoFileFromUri(requireContext(), it)
 
@@ -371,6 +252,65 @@ class MainPageFragment : BaseFragment() {
     }
 
 
+
+
+
+
+    //----------------------------------------------------------------------------------------------
+    private fun initAndObserveAttachFileViewModel() {
+        attachFilesViewModel = getViewModel(AttachFilesViewModel::class.java)
+
+        attachFilesViewModel.apply {
+            mediaSelected.observe(
+                viewLifecycleOwner,
+                Observer {
+                    it.getContentIfNotHandled()?.let {
+                        viewModel.setMediaAttachedStatus(true)
+                    }
+                }
+            )
+        }
+    }
+
+    private fun initAndObserveVideoCropViewModel() {
+        videoCropViewModel = getViewModel(VideoCropViewModel::class.java)
+    }
+
+    private fun releasePlayer() {
+        if (this::exoPlayer.isInitialized) {
+            isPlayerPlaying = exoPlayer.playWhenReady
+            playbackPosition = exoPlayer.currentPosition
+            currentWindow = exoPlayer.currentMediaItemIndex
+            exoPlayer.release()
+        }
+    }
+    private fun initPlayer(mediaUri: Uri) {
+        exoPlayer = ExoPlayer.Builder(requireContext()).build().apply {
+            playWhenReady = isPlayerPlaying
+            seekTo(currentWindow, playbackPosition)
+            setMediaItem(MediaItem.fromUri(mediaUri))
+            prepare()
+        }
+
+        exoPlayer.addListener(object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == Player.STATE_READY || playbackState == Player.STATE_BUFFERING) {
+                    viewModel.setPlaybackCurrentPosition(exoPlayer.currentPosition)
+                }
+            }
+
+            override fun onPositionDiscontinuity(
+                oldPosition: Player.PositionInfo,
+                newPosition: Player.PositionInfo,
+                reason: Int
+            ) {
+                viewModel.setPlaybackCurrentPosition(exoPlayer.currentPosition)
+            }
+        })
+        playerView.player = exoPlayer
+        binding.includeMediaEdit.spvControllers.player = exoPlayer
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -425,19 +365,4 @@ class MainPageFragment : BaseFragment() {
         const val STATE_PLAYER_PLAYING = "playerOnPlay"
     }
 
-    private fun stopRunningProcess() {
-//        FFmpeg.getInstance(requireContext()).killRunningProcesses()
-    }
-
-//    private fun isRunning(): Boolean {
-//        return FFmpeg.getInstance(requireContext()).isFFmpegCommandRunning
-//    }
-
-    private fun showInProgressToast() {
-        Toast.makeText(
-            requireContext(),
-            "Operation already in progress! Try again in a while.",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
 }
