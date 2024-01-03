@@ -99,6 +99,8 @@
 
     <color name="progressBarStroke">#F3F5F6</color>
 
+    <color name="statusSuccess">#56CA61</color>
+    <color name="statusError">#EF6B6B</color>
     <!---->
     <color name="E01515">#E01515</color>
     <color name="EBEBEB">#EBEBEB</color>

@@ -30,5 +30,6 @@ enum class RequestCodeEnums(val id: Int) {
 
     SELECT_POLLUTANT(1017),
     PICK_IMAGE_OR_FILE(1018),
+    SHOW_LOGS_LOADING(1019)
 
 }

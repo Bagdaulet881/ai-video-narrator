@@ -41,4 +41,13 @@
         <item name="android:elevation">2dp</item>
     </style>
 
+    <style name="AppBottomSheetDialogTheme" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/shape_bg_bottom_sheet_dialog</item>
+        <!--        <item name="android:layout_marginStart">@dimen/dp_14</item>-->
+        <!--        <item name="android:layout_marginEnd">@dimen/dp_14</item>-->
+        <!--        <item name="android:layout_marginTop">-14dp</item>-->
+    </style>
 </resources>

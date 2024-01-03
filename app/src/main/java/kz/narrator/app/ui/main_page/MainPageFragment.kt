@@ -17,6 +17,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.cloud.speech.v1.*
 import kz.narrator.app.R
+import kz.narrator.app.data.enums.app.RequestCodeEnums
 import kz.narrator.app.data.models.network.Status
 import kz.narrator.app.databinding.FragmentMainPageBinding
 import kz.narrator.app.ui.ai_processor.image_analyze.ImageAnalyzerViewModel
@@ -25,6 +26,7 @@ import kz.narrator.app.ui.ai_processor.text_to_speech.TextToSpeechViewModel
 import kz.narrator.app.ui.ai_processor.video_crop.VideoCropViewModel
 import kz.narrator.app.ui.attach_files.AttachFilesUtils
 import kz.narrator.app.ui.attach_files.AttachFilesViewModel
+import kz.narrator.app.ui.bottom_sheet.LoggingStateDialog
 import kz.narrator.app.ui_common.base.BaseFragment
 import kz.narrator.app.ui_common.video_tools.video.TextOnVideo
 import kz.narrator.app.utils.file.FileUtils
@@ -48,9 +50,7 @@ class MainPageFragment : BaseFragment() {
     private lateinit var playerView: StyledPlayerView
     private var currentWindow = 0
     private var playbackPosition: Long = 0
-    private var isFullscreen = false
     private var isPlayerPlaying = true
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -117,18 +117,17 @@ class MainPageFragment : BaseFragment() {
                 viewLifecycleOwner,
                 Observer {
                     it.getContentIfNotHandled()?.let {
+                        viewModel.uiLoggingCallback.onLogState("OpenAI: request state", it.status)
                         when (it.status) {
                             Status.SUCCESS -> {
+                                viewModel.uiLoggingCallback.onLogState("OpenAI: response size ${it.data?.choices?.size}", Status.SUCCESS)
                                 onOpenAiResourceSuccess(it.data)
-                                dismissProgressDialog()
                             }
                             Status.ERROR -> {
                                 handleExceptionView(it.exception)
-                                dismissProgressDialog()
+                                viewModel.uiLoggingCallback.onLogState("OpenAI: request error ${it.exception}", it.status)
                             }
-                            Status.LOADING -> {
-                                showProgressDialog()
-                            }
+                            else -> {}
                         }
                     }
                 }
@@ -144,18 +143,17 @@ class MainPageFragment : BaseFragment() {
                 viewLifecycleOwner,
                 Observer {
                     it.getContentIfNotHandled()?.let {
+                        viewModel.uiLoggingCallback.onLogState("ElevenLabs: request state", it.status)
+
                         when (it.status) {
                             Status.SUCCESS -> {
+                                viewModel.uiLoggingCallback.onLogState("ElevenLabs: response", Status.SUCCESS)
                                 onAudioFileResourceSuccess(it.data)
-                                dismissProgressDialog()
                             }
                             Status.ERROR -> {
-                                handleExceptionView(it.exception)
-                                dismissProgressDialog()
+                                viewModel.uiLoggingCallback.onLogState("ElevenLabs: error ${it.exception}", Status.ERROR)
                             }
-                            Status.LOADING -> {
-                                showProgressDialog()
-                            }
+                            else -> {}
                         }
                     }
                 }
@@ -167,6 +165,7 @@ class MainPageFragment : BaseFragment() {
         viewModel.setAttachFilesCallback(attachFilesUtils.attachFilesViewModel.attachFilesCallback)
 
         viewModel.apply {
+
             createVideo.observe(
                 viewLifecycleOwner,
                 Observer {
@@ -246,9 +245,25 @@ class MainPageFragment : BaseFragment() {
             )
         }
 
+        viewModel.runBottomSheet.observe(
+            viewLifecycleOwner,
+            Observer {
+                it.getContentIfNotHandled()?.let {
+                    val dialog = LoggingStateDialog.newInstance()
+                    dialog.setTargetFragment(this, RequestCodeEnums.SHOW_LOGS_LOADING.id)
+                    dialog.show(requireFragmentManager(), "")
+                }
+            }
+        )
+
         videoCropViewModel.setMainMediaCallback(viewModel.mainAnalyzeCallback)
         ivAnalyzerViewModel.setMainMediaCallback(viewModel.mainAnalyzeCallback)
         textSpeechViewModel.setMainMediaCallback(viewModel.mainAnalyzeCallback)
+
+        videoCropViewModel.setUILoggingCallback(viewModel.uiLoggingCallback)
+        ivAnalyzerViewModel.setUILoggingCallback(viewModel.uiLoggingCallback)
+        textSpeechViewModel.setUILoggingCallback(viewModel.uiLoggingCallback)
+
     }
 
 

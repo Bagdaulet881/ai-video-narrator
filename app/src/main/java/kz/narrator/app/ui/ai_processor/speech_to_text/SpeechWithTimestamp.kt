@@ -51,7 +51,7 @@ class SpeechWithTimestamp private constructor(
     }
 
     private fun analyze(fileByteString: ByteString) {
-        resultLoggingCallback.onSpeechTimeStampLog("Initializing speech to timestamp subtitle", Status.LOADING)
+        resultLoggingCallback.onLogState("GoogleAI: initializing", Status.LOADING)
         val req = RecognizeRequest.newBuilder()
             .setConfig(
                 RecognitionConfig.newBuilder()
@@ -68,15 +68,15 @@ class SpeechWithTimestamp private constructor(
             )
             .build()
 
-        resultLoggingCallback.onSpeechTimeStampLog("Request sent! speech to timestamp", Status.LOADING)
+        resultLoggingCallback.onLogState("GoogleAI: request", Status.LOADING)
         val response = speechClient.recognize(req)
-        resultLoggingCallback.onSpeechTimeStampLog("Response cnt=${response.resultsCount}! speech to timestamp", Status.SUCCESS)
+        resultLoggingCallback.onLogState("GoogleAI: response cnt=${response.resultsCount}!", Status.SUCCESS)
 
         Log.d("MSG", "Response, count ${response.resultsCount}")
         val results = response.resultsList
         val alternative = results.get(0).getAlternativesList().get(0)
         val sntcs = mapTimeStamps(alternative.wordsList)
-        resultLoggingCallback.onSpeechTimeStampLog("Response sentences tmps=${sntcs.size}! speech to timestamp", Status.SUCCESS)
+        resultLoggingCallback.onLogState("GoogleAI: response sentences=${sntcs.size}!", Status.SUCCESS)
         resultLoggingCallback.onTimeStampSuccess(sntcs)
     }
 

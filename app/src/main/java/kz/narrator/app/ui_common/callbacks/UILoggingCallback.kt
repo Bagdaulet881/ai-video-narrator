@@ -7,6 +7,6 @@ interface UILoggingCallback {
 
     fun onTimeStampSuccess(sentences: List<MappedTimeStamps>)
 
-    fun onSpeechTimeStampLog(msg: String, status: Status)
+    fun onLogState(msg: String, status: Status)
 
 }

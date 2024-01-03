@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kz.narrator.app.data.models.ai_data.LoggingState
 import kz.narrator.app.data.models.ai_data.MappedTimeStamps
 import kz.narrator.app.data.models.ai_data.MediaFileInfo
 import kz.narrator.app.data.models.custom.Scan
@@ -19,6 +20,7 @@ import kz.narrator.app.utils.convertToMicroseconds
 import kz.narrator.app.utils.formatTime
 import kz.narrator.app.utils.live_data.Event
 import java.io.File
+import java.util.*
 import javax.inject.Inject
 
 class MainPageViewModel
@@ -26,10 +28,17 @@ class MainPageViewModel
     private val app: Application
 ) : AndroidViewModel(app) {
 
+    private val _listOfLogs = MutableLiveData<List<Any>>()
+    val listOfLogs: LiveData<List<Any>>
+        get() = _listOfLogs
 
     private val _playAudio = MutableLiveData<Event<String>>()
     val playAudio: LiveData<Event<String>>
         get() = _playAudio
+
+    private val _runBottomSheet = MutableLiveData<Event<Unit>>()
+    val runBottomSheet: LiveData<Event<Unit>>
+        get() = _runBottomSheet
 
     private val _runVideoPlayer = MutableLiveData<Event<Uri>>()
     val runVideoPlayer: LiveData<Event<Uri>>
@@ -69,19 +78,62 @@ class MainPageViewModel
     /**
      *
      */
+    val uiLoggingCallback = object : UILoggingCallback {
+        override fun onTimeStampSuccess(sentences: List<MappedTimeStamps>) {
+            Log.i("MSG", "MAIN_VM_UI_LOG: onTimeStampSuccess ${sentences}")
+        }
+
+        override fun onLogState(msg: String, status: Status) {
+            val sz = _listOfLogs.value?.lastIndex
+            val cnt = if(sz == null) 0 else (_listOfLogs.value?.get(sz) as LoggingState).id + 1
+
+            setLogList(
+                LoggingState(
+                    id = cnt,
+                    msg = msg,
+                    status = status
+                )
+            )
+            Log.i("MSG", "MAIN_VM_UI_LOG: ${msg}")
+        }
+
+    }
+
+    fun setLogList(item: LoggingState) {
+        val temp = mutableListOf<Any>()
+
+        _listOfLogs.value?.let {
+            temp.addAll(it)
+        }
+        temp.add(item)
+
+        _listOfLogs.postValue(temp)
+    }
+
+    /**
+     *
+     */
     val mainAnalyzeCallback = object : MainMediaCallback {
         override fun onImageCropped(frames: List<Bitmap>) {
             Log.i("MSG", "BIG_LOGGER: onImageCropped ${frames.size}")
+            uiLoggingCallback.onLogState("MAIN: frame cropped", Status.SUCCESS)
             croppedImagesData.postValue(frames)
             _runOpenAi.postValue(Event(Unit))
         }
 
         override fun getSelectedMediaInfo(): List<MediaFileInfo> {
-            if(attachFilesCallback.getAttachedFiles().isNotEmpty()){
+            if (attachFilesCallback.getAttachedFiles().isNotEmpty()) {
                 Log.i("MSG", "BIG_LOGGER: getSelectedMediaInfo OK")
-                return listOf(MediaFileInfo(mediaFilePath = attachedMedia.value!!.uri, frameBestShot = bestshotMinisec.value))
-            }else{
+                uiLoggingCallback.onLogState("MAIN: getSelectedMediaInfo", Status.SUCCESS)
+                return listOf(
+                    MediaFileInfo(
+                        mediaFilePath = attachedMedia.value!!.uri,
+                        frameBestShot = bestshotMinisec.value
+                    )
+                )
+            } else {
                 Log.i("MSG", "BIG_LOGGER: getSelectedMediaInfo error")
+                uiLoggingCallback.onLogState("MAIN: getSelectedMediaInfo", Status.ERROR)
                 //TODO 881 Log error
                 return emptyList()
             }
@@ -89,15 +141,18 @@ class MainPageViewModel
 
         override fun onImageAnalyzed(analyzedText: String) {
             Log.i("MSG", "BIG_LOGGER: onImageAnalyzed ${analyzedText}")
+            uiLoggingCallback.onLogState("MAIN: onImageAnalyzed", Status.SUCCESS)
             analyzedTextData.postValue(analyzedText)
             _runVoiceLab.postValue(Event(Unit))
         }
 
         override fun getCroppedImages(): List<Bitmap> {
-            if(croppedImagesData.value?.isNotEmpty() == true){
+            if (croppedImagesData.value?.isNotEmpty() == true) {
                 Log.i("MSG", "BIG_LOGGER: getCroppedImages OK")
+                uiLoggingCallback.onLogState("MAIN: getCroppedImages", Status.SUCCESS)
                 return croppedImagesData.value!!
-            }else{
+            } else {
+                uiLoggingCallback.onLogState("MAIN: getCroppedImages", Status.ERROR)
                 Log.i("MSG", "BIG_LOGGER: getCroppedImages error")
                 //TODO 881 Log error
                 return emptyList()
@@ -106,14 +161,17 @@ class MainPageViewModel
 
         override fun onTextToVoice(audioFileName: String) {
             audioFileNameData.postValue(audioFileName)
+            uiLoggingCallback.onLogState("MAIN: onTextToVoice", Status.SUCCESS)
             Log.i("MSG", "BIG_LOGGER: onTextToVoice ${audioFileName}")
         }
 
         override fun getAnalyzedText(): String {
-            if(analyzedTextData.value?.isNotEmpty() == true){
+            if (analyzedTextData.value?.isNotEmpty() == true) {
+                uiLoggingCallback.onLogState("MAIN: getAnalyzedText", Status.SUCCESS)
                 Log.i("MSG", "BIG_LOGGER: getAnalyzedText OK")
                 return analyzedTextData.value!!
-            }else{
+            } else {
+                uiLoggingCallback.onLogState("MAIN: getAnalyzedText", Status.ERROR)
                 Log.i("MSG", "BIG_LOGGER: getAnalyzedText error")
                 //TODO 881 Log error
                 return ""
@@ -121,19 +179,7 @@ class MainPageViewModel
         }
 
     }
-    /**
-     *
-     */
-    val uiLoggingCallback = object : UILoggingCallback {
-        override fun onTimeStampSuccess(sentences: List<MappedTimeStamps>) {
-            Log.i("MSG", "MAIN_VM_UI_LOG: onTimeStampSuccess ${sentences}")
-        }
 
-        override fun onSpeechTimeStampLog(msg: String, status: Status) {
-            Log.i("MSG", "MAIN_VM_UI_LOG: ${msg}")
-        }
-
-    }
     /**
      *
      */
@@ -143,14 +189,14 @@ class MainPageViewModel
         this.attachFilesCallback = callback
     }
 
-    fun setMediaAttachedStatus(isAttached: Boolean){
+    fun setMediaAttachedStatus(isAttached: Boolean) {
         val media = attachFilesCallback.getAttachedFiles().get(0) as Scan
         attachedMedia.postValue(media)
         Log.i("MSG", "FFMPEG_LOG: media attached")
-        //TODO 881 UNCOMMENT, testing
-//        _runVideoPlayer.postValue(Event(media.uri))
-//        isMediaEditVisible.postValue(isAttached)
+        _runVideoPlayer.postValue(Event(media.uri))
+        isMediaEditVisible.postValue(isAttached)
     }
+
     /**
      *
      */
@@ -160,22 +206,28 @@ class MainPageViewModel
         }
 
         override fun onSuccess(convertedFile: File, type: String) {
+            uiLoggingCallback.onLogState(
+                "FFMPEG: file converted ${convertedFile.path}",
+                Status.SUCCESS
+            )
             Log.i("MSG", "FFMPEG_LOG: onSuccess ${type} ${convertedFile.path}")
         }
 
         override fun onFailure(error: Exception) {
+            uiLoggingCallback.onLogState("FFMPEG: onFailure ${error.cause}", Status.ERROR)
             Log.i("MSG", "FFMPEG_LOG: onFailure ${error.cause}")
         }
 
         override fun onNotAvailable(error: Exception) {
+            uiLoggingCallback.onLogState("FFMPEG: onNotAvailable ${error.message}", Status.ERROR)
             Log.i("MSG", "FFMPEG_LOG: onNotAvailable ${error.message}")
         }
 
         override fun onFinish() {
+            uiLoggingCallback.onLogState("FFMPEG: onFinish", Status.SUCCESS)
             Log.i("MSG", "FFMPEG_LOG: onFinish")
         }
     }
-
 
 
     /**
@@ -185,33 +237,57 @@ class MainPageViewModel
         currentFrameMsFieldText.postValue(formatTime(currentPosition))
         bestshotMinisec.postValue(convertToMicroseconds(currentPosition))
     }
+
     /**
      *BtnClickListeners
      */
-    fun onAnalyzeBtnClick(){
-        if (attachedMedia.value != null){
+    fun onBottomSheetOpened() {
+        if (attachedMedia.value != null) {
             _runVideoCrop.postValue(Event(Unit))
         }
+//        testLog()
+    }
+
+    fun testLog() {
+        val timer = Timer()
+        var counter = 0
+
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                val data = LoggingState(
+                    counter, "some AI tool log $counter",
+                    if (counter > 8) Status.SUCCESS else if (counter % 2 == 0) Status.LOADING else Status.ERROR
+                )
+                setLogList(data)
+                counter++
+            }
+        }, 0, 2000) // Schedule task with 0 delay and 2-second period
+    }
+
+    fun onAnalyzeBtnClick() {
+        _runBottomSheet.postValue(Event(Unit))
     }
 
     fun onAttachFileBtnClick() {
         attachFilesCallback.onAttachFileBtnClick()
     }
 
-    fun onTestAudioBtnClick(){
+    fun onTestAudioBtnClick() {
 //        val fileName = "testAudioFile.mp3"
         val fileName = "audio_name_20240102_053427.mp3"
 
         _playAudio.postValue(Event(fileName))
     }
-    fun onTestAudio2BtnClick(){
-        val text = "Hi from Android Agaaaain! So im testing some audio timestamps from google cloud and creting a new audio, using our elevenlabs!"
+
+    fun onTestAudio2BtnClick() {
+        val text =
+            "Hi from Android Agaaaain! So im testing some audio timestamps from google cloud and creting a new audio, using our elevenlabs!"
 
         analyzedTextData.postValue(text)
         _runVoiceLab.postValue(Event(Unit))
     }
 
-    fun onRunVideoBtnClick(){
+    fun onRunVideoBtnClick() {
         _createVideo.postValue(Event(Unit))
     }
 }

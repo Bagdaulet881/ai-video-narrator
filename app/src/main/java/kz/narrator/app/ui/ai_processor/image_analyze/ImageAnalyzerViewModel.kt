@@ -6,15 +6,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.aallam.openai.api.chat.*
-import com.aallam.openai.api.core.Role.Companion.Assistant
 import com.aallam.openai.api.model.ModelId
-import kz.narrator.app.data.models.custom.Scan
-import kz.narrator.app.data.openai.OpenAiInstance
-import kz.narrator.app.data.preferences.Preferences
+import kz.narrator.app.data.models.network.Status
 import kz.narrator.app.data.repository.ai_repos.OpenAiRepositiry
-import kz.narrator.app.data.repository.appeal.AppealRepository
-import kz.narrator.app.ui.attach_files.AttachFilesCallback
 import kz.narrator.app.ui_common.callbacks.MainMediaCallback
+import kz.narrator.app.ui_common.callbacks.UILoggingCallback
 import kz.narrator.app.utils.base64.Base64Utils
 import javax.inject.Inject
 
@@ -31,12 +27,17 @@ class ImageAnalyzerViewModel
      *
      */
     private lateinit var mainCallback: MainMediaCallback
-
     fun setMainMediaCallback(callback: MainMediaCallback) {
         this.mainCallback = callback
     }
 
+    private lateinit var resultLoggingCallback: UILoggingCallback
+    fun setUILoggingCallback(callback: UILoggingCallback) {
+        this.resultLoggingCallback = callback
+    }
+
     fun onRun(){
+        resultLoggingCallback.onLogState("OpenAI: initializing", Status.SUCCESS)
         generateChatGptRequest()
     }
     /**
@@ -49,6 +50,8 @@ class ImageAnalyzerViewModel
     }
 
     fun generateChatGptRequest() {
+        resultLoggingCallback.onLogState("OpenAI: making requests", Status.LOADING)
+
         val chatCompletionRequest = ChatCompletionRequest(
             //gpt-3.5-turbo
             model = ModelId("gpt-4-vision-preview"),
@@ -94,6 +97,7 @@ class ImageAnalyzerViewModel
                 content = getChatGPTParams()
             )
         )
+        resultLoggingCallback.onLogState("OpenAI: get chatGPT scripts", Status.SUCCESS)
 
         return requestScripts
     }
@@ -113,17 +117,11 @@ class ImageAnalyzerViewModel
                     url = "data:image/jpeg;base64,${
                         Base64Utils.convertToBase64(attachedImages.get(0))
                     }"
-                    //if error then use getSmallBitmap
-//                    "data:image/jpeg;base64,${
-//                        Base64Utils.getBase64(
-//                            app.applicationContext,
-//                            attachedImages.get(0).uri
-//                        )
-//                    }"
                 )
             )
         )
 
+        resultLoggingCallback.onLogState("OpenAI: get chatGPT params", Status.SUCCESS)
         return commands.toList()
     }
 }
