@@ -90,7 +90,7 @@ class SpeechWithTimestamp private constructor(
             val word = StringBuilder()
 
             sentence.forEachIndexed { index, wordInfo ->
-                val wordTxt = wordInfo.word
+                val wordTxt = wordInfo.word.replace("'","")
                 val startTime = wordInfo.startTime
                 val endTime = wordInfo.endTime
 

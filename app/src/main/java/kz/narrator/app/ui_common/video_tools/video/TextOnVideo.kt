@@ -112,38 +112,6 @@ class TextOnVideo private constructor(private val context: Context) {
         val outputLocation = VideoFileUtils.getConvertedFile(outputPath, outputFileName)
         Log.i("MSG", "FFMPEG_LOG: outputLocation ${outputLocation.exists()}")
 
-        val cmd = arrayOf(
-            "-i",
-            video!!.path,
-            "-vf",
-            "drawtext=fontfile=" + font!!.path + ":text=" + text + ": fontcolor=" + color + ": fontsize=" + size + border + ": " + position,
-            "-c:v",
-            "libx264",
-            "-c:a",
-            "copy",
-            "-y",
-            outputLocation.path
-        )
-
-        val cmdAudioOnVideo = arrayOf(
-            "-i",
-            video!!.path,
-            "-i",
-            audio!!.path,
-            "-c:v",
-            "copy",
-            "-c:a",
-            "aac",
-            "-strict",
-            "experimental",
-            "-map",
-            "0:v:0",
-            "-map",
-            "1:a:0",
-            "-shortest",
-            "-y",
-            outputLocation.path
-        )
 
         val combinedCmd = arrayOf(
             "-i", video!!.path, // Input video
@@ -159,11 +127,25 @@ class TextOnVideo private constructor(private val context: Context) {
             "-y", outputLocation.path // Output file
         )
 
+        val newListedCmd = arrayOf(
+            "-i", video!!.path, // Input video
+            "-i", audio!!.path, // Input audio
+            "-filter_complex",
+            getTimeStampCommand(),
+            "-map", "[v]", // Map the video output from the filtergraph
+            "-map", "1:a", // Map audio from the second input
+            "-c:v", "libx264", // Video codec
+            "-c:a", "aac", // Audio codec
+            "-strict", "experimental",
+            "-shortest", // Finish encoding when the shortest input stream ends
+            "-y", outputLocation.path // Output file
+        )
+
         Config.enableLogCallback(LogCallback { message ->
             Log.d("FFMPEG_LOG", "LOGGING: ${message.text}")
         })
 
-        val rc = FFmpeg.execute(combinedCmd)
+        val rc = FFmpeg.execute(newListedCmd)
 
         if (rc == RETURN_CODE_SUCCESS) {
             Log.i("MSG", "FFMPEG_LOG: RETURN_CODE_SUCCESS ${outputLocation}")
@@ -172,16 +154,30 @@ class TextOnVideo private constructor(private val context: Context) {
             Log.i("MSG", "FFMPEG_LOG: Handle failure ${rc}")
             // Handle failure
         }
+    }
 
-        /**
-         * use like add string by forEach where wordList data is groupped by 7 word(max word) and replace 'group1 words' with 7 words and start_number is timeStart, end_number is when it dissappeared
-         * ffmpeg -i input.mp4 -vf \
-        "[0:v]drawtext=text='group1 words':start_number=group1_start:end_number=group1_end:fontfile=/path/to/font.ttf:fontsize=24:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2, \
-        drawtext=text='group2 words':start_number=group2_start:end_number=group2_end:fontfile=/path/to/font.ttf:fontsize=24:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2, \
-        ..." \
-        -codec:a copy output.mp4
+    fun getTimeStampCommand(): String {
 
-         */
+        val text1 = "I from Android to gain so Im testing some audio time stems"
+        val text2 = "from Google cloud and creating a new audio using 11 labs"
+        val st1 = 0
+        val end1 = 3
+        val st2 = 3
+        val end2 = 7
+
+        val initial = "[0:v]"
+        val end = "[v]"
+        val seperator = ","
+        val first = "drawtext=fontfile=${font!!.path}:text='${text1}':fontcolor=$color:fontsize=$size$border:$position:enable='between(t,$st1,5)'"
+        val second = "drawtext=fontfile=${font!!.path}:text='${text2}':fontcolor=$color:fontsize=$size$border:$position:enable='between(t,5,10)'"
+
+        val cmdNew = StringBuilder().append(initial)
+            .append(first)
+            .append(seperator)
+            .append(second)
+            .append(end).toString()
+        Log.i("MSG", "COMMAND881: ${cmdNew}")
+        return cmdNew
     }
 
     companion object {
@@ -202,4 +198,37 @@ class TextOnVideo private constructor(private val context: Context) {
 
         var POSITION_NARRATING_TEXT = "x=(main_w/2-text_w/2):y=main_h-(text_h*6)"
     }
+
+    //val cmdTextOnVideo = arrayOf(
+    //            "-i",
+    //            video!!.path,
+    //            "-vf",
+    //            "drawtext=fontfile=" + font!!.path + ":text=" + text + ": fontcolor=" + color + ": fontsize=" + size + border + ": " + position,
+    //            "-c:v",
+    //            "libx264",
+    //            "-c:a",
+    //            "copy",
+    //            "-y",
+    //            outputLocation.path
+    //        )
+    //
+    //        val cmdAudioOnVideo = arrayOf(
+    //            "-i",
+    //            video!!.path,
+    //            "-i",
+    //            audio!!.path,
+    //            "-c:v",
+    //            "copy",
+    //            "-c:a",
+    //            "aac",
+    //            "-strict",
+    //            "experimental",
+    //            "-map",
+    //            "0:v:0",
+    //            "-map",
+    //            "1:a:0",
+    //            "-shortest",
+    //            "-y",
+    //            outputLocation.path
+    //        )
 }
