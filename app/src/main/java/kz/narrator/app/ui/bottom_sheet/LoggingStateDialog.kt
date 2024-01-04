@@ -16,10 +16,12 @@ class LoggingStateDialog: BaseBottomSheetDialogFragment() {
 
     private lateinit var binding: DialogLoggingStateBinding
     private lateinit var viewModel: MainPageViewModel
+    private var type: String = ""
 
     companion object {
-        fun newInstance(): LoggingStateDialog {
+        fun newInstance(type: String): LoggingStateDialog {
             val dialog = LoggingStateDialog()
+            dialog.type = type
             return dialog
         }
     }
@@ -44,6 +46,10 @@ class LoggingStateDialog: BaseBottomSheetDialogFragment() {
     fun initView(){
         binding.recyclerView.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+
+        binding.btnClose.setOnClickListener {
+            dismiss()
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -61,9 +67,11 @@ class LoggingStateDialog: BaseBottomSheetDialogFragment() {
             this,
             Observer {
                 (binding.recyclerView.adapter as LoggingAdapter).submitList(it)
-                binding.recyclerView.smoothScrollToPosition(it.size - 1)
+                if(it.size > 3){
+                    binding.recyclerView.smoothScrollToPosition(it.size - 1)
+                }
             })
 
-        viewModel.onBottomSheetOpened()
+        viewModel.onBottomSheetOpened(type)
     }
 }

@@ -75,12 +75,14 @@ class SpeechWithTimestamp private constructor(
         Log.d("MSG", "Response, count ${response.resultsCount}")
         val results = response.resultsList
         val alternative = results.get(0).getAlternativesList().get(0)
+
         val sntcs = mapTimeStamps(alternative.wordsList)
         resultLoggingCallback.onLogState("GoogleAI: response sentences=${sntcs.size}!", Status.SUCCESS)
         resultLoggingCallback.onTimeStampSuccess(sntcs)
     }
 
     private fun mapTimeStamps(wordsList: MutableList<WordInfo>): List<MappedTimeStamps> {
+        val MAX_CHAR_PER_LINE = 23
         val timestamps = mutableListOf<MappedTimeStamps>()
 
         val sentences = wordsList.splitIntoSublists(12)
@@ -90,7 +92,7 @@ class SpeechWithTimestamp private constructor(
             val word = StringBuilder()
 
             sentence.forEachIndexed { index, wordInfo ->
-                val wordTxt = wordInfo.word.replace("'","")
+                val wordTxt = addLineBreaks(wordInfo.word.replace("'",""), MAX_CHAR_PER_LINE)
                 val startTime = wordInfo.startTime
                 val endTime = wordInfo.endTime
 
@@ -116,6 +118,24 @@ class SpeechWithTimestamp private constructor(
         }
 
         return timestamps.toList()
+    }
+
+    fun addLineBreaks(text: String, maxChars: Int): String {
+        val words = text.split(" ")
+        var currentLine = ""
+        var processedText = ""
+
+        for (word in words) {
+            if (currentLine.length + word.length > maxChars) {
+                processedText += "$currentLine\n"
+                currentLine = "$word "
+            } else {
+                currentLine += "$word "
+            }
+        }
+
+        processedText += currentLine // Add the last line
+        return processedText.trim()
     }
 
     companion object {

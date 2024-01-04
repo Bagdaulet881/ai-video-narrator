@@ -9,4 +9,6 @@ interface UILoggingCallback {
 
     fun onLogState(msg: String, status: Status)
 
+    fun onProgressState(id:Int, msg: String, status: Status)
+
 }

@@ -19,7 +19,7 @@
 
         <TextView
             android:id="@+id/tv_state_msg"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:text="@{item.msg}"
@@ -29,7 +29,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Analyzing state"
+            tools:text="Analyzing stateAnalyzing stateAnalyzing state"
             tools:textColor="@color/greenSwitch" />
 
         <androidx.constraintlayout.widget.Guideline

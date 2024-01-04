@@ -7,6 +7,8 @@ import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
 import com.arthenica.mobileffmpeg.FFmpeg
 import com.arthenica.mobileffmpeg.LogCallback
+import kz.narrator.app.data.models.ai_data.MappedTimeStamps
+import kz.narrator.app.data.models.network.Status
 import kz.narrator.app.ui_common.callbacks.FFMpegCallback
 import kz.narrator.app.utils.file.VideoFileUtils
 import java.io.File
@@ -27,6 +29,7 @@ class TextOnVideo private constructor(private val context: Context) {
     private var outputFileName = ""
     private var font: File? = null
     private var text: String? = null
+    private var timeStamps: List<MappedTimeStamps>? = null
     private var position: String? = null
     private var color: String? = null
     private var size: String? = null
@@ -75,6 +78,11 @@ class TextOnVideo private constructor(private val context: Context) {
         return this
     }
 
+    fun setTimestamps(list: List<MappedTimeStamps>?): TextOnVideo {
+        this.timeStamps = list
+        return this
+    }
+
     fun setPosition(output: String): TextOnVideo {
         this.position = output
         return this
@@ -104,13 +112,17 @@ class TextOnVideo private constructor(private val context: Context) {
             callback!!.onFailure(IOException("File not exists"))
             return
         }
+        callback!!.onLogStatus("video path check", Status.SUCCESS)
         if (!video!!.canRead()) {
             callback!!.onFailure(IOException("Can't read the file. Missing permission?"))
             return
         }
+        callback!!.onLogStatus("video readable", Status.SUCCESS)
+
 
         val outputLocation = VideoFileUtils.getConvertedFile(outputPath, outputFileName)
         Log.i("MSG", "FFMPEG_LOG: outputLocation ${outputLocation.exists()}")
+        callback!!.onLogStatus("video output check", if(outputLocation.exists()) Status.SUCCESS else Status.ERROR)
 
 
         val combinedCmd = arrayOf(
@@ -141,43 +153,49 @@ class TextOnVideo private constructor(private val context: Context) {
             "-y", outputLocation.path // Output file
         )
 
-        Config.enableLogCallback(LogCallback { message ->
-            Log.d("FFMPEG_LOG", "LOGGING: ${message.text}")
-        })
+//        Config.enableLogCallback(LogCallback { message ->
+//            Log.d("FFMPEG_LOG", "LOGGING: ${message.text}")
+//            callback!!.onProgress(message.text)
+//        })
 
         val rc = FFmpeg.execute(newListedCmd)
 
         if (rc == RETURN_CODE_SUCCESS) {
+            callback!!.onSuccess("")
             Log.i("MSG", "FFMPEG_LOG: RETURN_CODE_SUCCESS ${outputLocation}")
-            // Command execution successful
         } else {
+            callback!!.onLogStatus("video create", Status.ERROR)
             Log.i("MSG", "FFMPEG_LOG: Handle failure ${rc}")
-            // Handle failure
         }
     }
 
     fun getTimeStampCommand(): String {
 
-        val text1 = "I from Android to gain so Im testing some audio time stems"
-        val text2 = "from Google cloud and creating a new audio using 11 labs"
-        val st1 = 0
-        val end1 = 3
-        val st2 = 3
-        val end2 = 7
-
         val initial = "[0:v]"
         val end = "[v]"
         val seperator = ","
-        val first = "drawtext=fontfile=${font!!.path}:text='${text1}':fontcolor=$color:fontsize=$size$border:$position:enable='between(t,$st1,5)'"
-        val second = "drawtext=fontfile=${font!!.path}:text='${text2}':fontcolor=$color:fontsize=$size$border:$position:enable='between(t,5,10)'"
 
-        val cmdNew = StringBuilder().append(initial)
-            .append(first)
-            .append(seperator)
-            .append(second)
-            .append(end).toString()
-        Log.i("MSG", "COMMAND881: ${cmdNew}")
-        return cmdNew
+        val cmdNew = StringBuilder()
+
+        if (timeStamps != null){
+            cmdNew.append(initial)
+            timeStamps!!.forEachIndexed {index, it ->
+                val text1 = it.word
+                val st1 = it.startTime
+                val end1 = it.endTime
+                cmdNew.append("drawtext=fontfile=${font!!.path}:text='${text1}':fontcolor=$color:fontsize=$size$border:$position:enable='between(t,$st1,$end1)'")
+
+                if(index != timeStamps!!.lastIndex){
+                    cmdNew.append(seperator)
+                }
+            }
+            cmdNew.append(end)
+        }
+//        val first = "drawtext=fontfile=${font!!.path}:text='${text1}':fontcolor=$color:fontsize=$size$border:$position:enable='between(t,$st1,5)'"
+//        val second = "drawtext=fontfile=${font!!.path}:text='${text2}':fontcolor=$color:fontsize=$size$border:$position:enable='between(t,5,10)'"
+
+        Log.i("MSG", "COMMAND881: ${cmdNew.toString()}")
+        return cmdNew.toString()
     }
 
     companion object {

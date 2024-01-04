@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
@@ -106,7 +105,7 @@ class MainPageFragment : BaseFragment() {
     fun initGoogleSpeechTimeStamp() {
         SpeechWithTimestamp.with(requireActivity(), requireContext())
             .setUILoggingCallback(viewModel.uiLoggingCallback)
-            .getTimeStamps("audio_name_20240102_053427.mp3")
+            .getTimeStamps(viewModel.audioFileNameData.value?:"") //"audio_name_20240102_053427.mp3"
     }
 
     private fun initAndObserveImageAnalyzerViewModel() {
@@ -176,18 +175,19 @@ class MainPageFragment : BaseFragment() {
                             if (file != null) {
                                 TextOnVideo.with(requireContext())
                                     .setFile(file)
-//                                        .setAudioFile(FileUtils.getAudioFile(requireContext(), viewModel.audioFileNameData.value?:""))
-                                    .setAudioFile(
-                                        FileUtils.getAudioFile(
-                                            requireContext(),
-                                            "audio_name_20240102_053427.mp3"
-                                        )
-                                    )
+                                    .setAudioFile(FileUtils.getAudioFile(requireContext(), viewModel.audioFileNameData.value?:""))
+//                                    .setAudioFile(
+//                                        FileUtils.getAudioFile(
+//                                            requireContext(),
+//                                            "audio_name_20240102_053427.mp3"
+//                                        )
+//                                    )
                                     .setOutputPath(VideoFileUtils.outputPath + "video")
-                                    .setOutputFileName("textOnVideo_asdasdTEST" + ".mp4")
+                                    .setOutputFileName(FileUtils.getName() + ".mp4") //TODO 881 change name dynamic
                                     .setFont(font) //Font .ttf of text
                                     .setText("Text Displayed on Video!!") //Text to be displayed
-                                    .setColor("#50b90e") //Color of Text
+                                    .setTimestamps(viewModel.audioFileTimeStampsData.value)
+                                    .setColor("#FFE880") //Color of Text
                                     .setSize("34") //Size of text
                                     .addBorder(true) //This will add background with border on text
                                     .setPosition(TextOnVideo.POSITION_NARRATING_TEXT) //Can be selected
@@ -195,6 +195,15 @@ class MainPageFragment : BaseFragment() {
                                     .draw()
                             }
                         }
+                    }
+                }
+            )
+
+            runGoogleAi.observe(
+                viewLifecycleOwner,
+                Observer {
+                    it.getContentIfNotHandled()?.let {
+                        initGoogleSpeechTimeStamp()
                     }
                 }
             )
@@ -249,7 +258,7 @@ class MainPageFragment : BaseFragment() {
             viewLifecycleOwner,
             Observer {
                 it.getContentIfNotHandled()?.let {
-                    val dialog = LoggingStateDialog.newInstance()
+                    val dialog = LoggingStateDialog.newInstance(it)
                     dialog.setTargetFragment(this, RequestCodeEnums.SHOW_LOGS_LOADING.id)
                     dialog.show(requireFragmentManager(), "")
                 }

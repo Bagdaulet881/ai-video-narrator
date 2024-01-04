@@ -10,3 +10,9 @@ fun <T> List<T>.splitIntoSublists(maxSublistSize: Int): List<List<T>> {
     }
     return result
 }
+
+fun extractSizeFromLog(log: String): String? {
+    val regex = "size=\\s*(\\d+\\s*\\w+)".toRegex()
+    val matchResult = regex.find(log)
+    return matchResult?.groups?.get(1)?.value
+}

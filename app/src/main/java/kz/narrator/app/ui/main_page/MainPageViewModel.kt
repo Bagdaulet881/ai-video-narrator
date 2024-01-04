@@ -17,6 +17,7 @@ import kz.narrator.app.ui_common.callbacks.FFMpegCallback
 import kz.narrator.app.ui_common.callbacks.MainMediaCallback
 import kz.narrator.app.ui_common.callbacks.UILoggingCallback
 import kz.narrator.app.utils.convertToMicroseconds
+import kz.narrator.app.utils.extractSizeFromLog
 import kz.narrator.app.utils.formatTime
 import kz.narrator.app.utils.live_data.Event
 import java.io.File
@@ -36,8 +37,8 @@ class MainPageViewModel
     val playAudio: LiveData<Event<String>>
         get() = _playAudio
 
-    private val _runBottomSheet = MutableLiveData<Event<Unit>>()
-    val runBottomSheet: LiveData<Event<Unit>>
+    private val _runBottomSheet = MutableLiveData<Event<String>>()
+    val runBottomSheet: LiveData<Event<String>>
         get() = _runBottomSheet
 
     private val _runVideoPlayer = MutableLiveData<Event<Uri>>()
@@ -56,6 +57,10 @@ class MainPageViewModel
     val runVoiceLab: LiveData<Event<Unit>>
         get() = _runVoiceLab
 
+    private val _runGoogleAi = MutableLiveData<Event<Unit>>()
+    val runGoogleAi: LiveData<Event<Unit>>
+        get() = _runGoogleAi
+
     private val _runResultScreen = MutableLiveData<Event<Unit>>()
     val runResultScreen: LiveData<Event<Unit>>
         get() = _runResultScreen
@@ -65,6 +70,9 @@ class MainPageViewModel
         get() = _createVideo
 
     val isMediaEditVisible = MutableLiveData<Boolean>(false)
+    val isMediaCreateVisible = MutableLiveData<Boolean>(false)
+    val isTestVisible = MutableLiveData<Boolean>(false)
+
     val currentFrameMsFieldText = MutableLiveData<String>()
 
     //Api DATA
@@ -74,22 +82,36 @@ class MainPageViewModel
     val croppedImagesData = MutableLiveData<List<Bitmap>>()
     val analyzedTextData = MutableLiveData<String>()
     val audioFileNameData = MutableLiveData<String>()
+    val audioFileTimeStampsData = MutableLiveData<List<MappedTimeStamps>>()
 
     /**
-     *
+     *CALLBACK_ UI Log
      */
     val uiLoggingCallback = object : UILoggingCallback {
         override fun onTimeStampSuccess(sentences: List<MappedTimeStamps>) {
             Log.i("MSG", "MAIN_VM_UI_LOG: onTimeStampSuccess ${sentences}")
+            audioFileTimeStampsData.postValue(sentences)
+            showHideCreateVideo(true)
         }
 
         override fun onLogState(msg: String, status: Status) {
             val sz = _listOfLogs.value?.lastIndex
-            val cnt = if(sz == null) 0 else (_listOfLogs.value?.get(sz) as LoggingState).id + 1
+            val cnt = if(sz == null || _listOfLogs.value?.isEmpty() == true) 0 else (_listOfLogs.value?.get(sz) as LoggingState).id + 1
 
             setLogList(
                 LoggingState(
                     id = cnt,
+                    msg = msg,
+                    status = status
+                )
+            )
+            Log.i("MSG", "MAIN_VM_UI_LOG: ${msg}")
+        }
+
+        override fun onProgressState(id: Int, msg: String, status: Status) {
+            setLogList(
+                LoggingState(
+                    id = id,
                     msg = msg,
                     status = status
                 )
@@ -111,7 +133,7 @@ class MainPageViewModel
     }
 
     /**
-     *
+     *CALLBACK_ Main
      */
     val mainAnalyzeCallback = object : MainMediaCallback {
         override fun onImageCropped(frames: List<Bitmap>) {
@@ -162,6 +184,7 @@ class MainPageViewModel
         override fun onTextToVoice(audioFileName: String) {
             audioFileNameData.postValue(audioFileName)
             uiLoggingCallback.onLogState("MAIN: onTextToVoice", Status.SUCCESS)
+            _runGoogleAi.postValue(Event(Unit))
             Log.i("MSG", "BIG_LOGGER: onTextToVoice ${audioFileName}")
         }
 
@@ -181,7 +204,7 @@ class MainPageViewModel
     }
 
     /**
-     *
+     *CALLBACK_ AttachFiles
      */
     private lateinit var attachFilesCallback: AttachFilesCallback
 
@@ -194,23 +217,28 @@ class MainPageViewModel
         attachedMedia.postValue(media)
         Log.i("MSG", "FFMPEG_LOG: media attached")
         _runVideoPlayer.postValue(Event(media.uri))
-        isMediaEditVisible.postValue(isAttached)
+        showHideEditVideo(isAttached)
     }
 
     /**
-     *
+     *CALLBACK_ FFMPEG
      */
     val ffMpegCallback = object : FFMpegCallback {
         override fun onProgress(progress: String) {
+//            val size = extractSizeFromLog(progress)
+//            uiLoggingCallback.onProgressState(881, "FFMPEG: size = $size", Status.LOADING)
             Log.i("MSG", "FFMPEG_LOG: onProgress ${progress}")
         }
 
-        override fun onSuccess(convertedFile: File, type: String) {
+        override fun onSuccess(msg: String) {
             uiLoggingCallback.onLogState(
-                "FFMPEG: file converted ${convertedFile.path}",
+                "FFMPEG: video create",
                 Status.SUCCESS
             )
-            Log.i("MSG", "FFMPEG_LOG: onSuccess ${type} ${convertedFile.path}")
+            uiLoggingCallback.onLogState(
+                "FFMPEG: DOWNLOADED to Gallery",
+                Status.SUCCESS
+            )
         }
 
         override fun onFailure(error: Exception) {
@@ -227,6 +255,10 @@ class MainPageViewModel
             uiLoggingCallback.onLogState("FFMPEG: onFinish", Status.SUCCESS)
             Log.i("MSG", "FFMPEG_LOG: onFinish")
         }
+
+        override fun onLogStatus(msg: String, status: Status) {
+            uiLoggingCallback.onLogState("FFMPEG: ${msg}", status)
+        }
     }
 
 
@@ -237,40 +269,52 @@ class MainPageViewModel
         currentFrameMsFieldText.postValue(formatTime(currentPosition))
         bestshotMinisec.postValue(convertToMicroseconds(currentPosition))
     }
+    /**
+     * States
+     */
 
+    fun showHideEditVideo(state: Boolean){
+        isMediaEditVisible.postValue(state)
+        isMediaCreateVisible.postValue(false)
+    }
+
+    fun showHideCreateVideo(state: Boolean){
+        isMediaCreateVisible.postValue(state)
+        isMediaEditVisible.postValue(false)
+    }
     /**
      *BtnClickListeners
      */
-    fun onBottomSheetOpened() {
-        if (attachedMedia.value != null) {
-            _runVideoCrop.postValue(Event(Unit))
-        }
-//        testLog()
-    }
-
-    fun testLog() {
-        val timer = Timer()
-        var counter = 0
-
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                val data = LoggingState(
-                    counter, "some AI tool log $counter",
-                    if (counter > 8) Status.SUCCESS else if (counter % 2 == 0) Status.LOADING else Status.ERROR
-                )
-                setLogList(data)
-                counter++
+    fun onBottomSheetOpened(type: String) {
+        when(type){
+            "analyze" -> {
+                if (attachedMedia.value != null) {
+                    _runVideoCrop.postValue(Event(Unit))
+                }
             }
-        }, 0, 2000) // Schedule task with 0 delay and 2-second period
+            "create" -> {
+                _listOfLogs.postValue(emptyList())
+                _createVideo.postValue(Event(Unit))
+            }
+        }
     }
 
     fun onAnalyzeBtnClick() {
-        _runBottomSheet.postValue(Event(Unit))
+        _runBottomSheet.postValue(Event("analyze"))
+    }
+
+    fun onCreateVideoBtnClick() {
+        _runBottomSheet.postValue(Event("create"))
     }
 
     fun onAttachFileBtnClick() {
         attachFilesCallback.onAttachFileBtnClick()
     }
+
+
+
+
+
 
     fun onTestAudioBtnClick() {
 //        val fileName = "testAudioFile.mp3"
@@ -287,7 +331,20 @@ class MainPageViewModel
         _runVoiceLab.postValue(Event(Unit))
     }
 
-    fun onRunVideoBtnClick() {
-        _createVideo.postValue(Event(Unit))
+
+    fun testLog() {
+        val timer = Timer()
+        var counter = 0
+
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                val data = LoggingState(
+                    counter, "some AI tool log $counter",
+                    if (counter > 8) Status.SUCCESS else if (counter % 2 == 0) Status.LOADING else Status.ERROR
+                )
+                setLogList(data)
+                counter++
+            }
+        }, 0, 2000) // Schedule task with 0 delay and 2-second period
     }
 }
