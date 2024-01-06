@@ -46,21 +46,47 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcv_list_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            app:cardBackgroundColor="@color/bg_peach_edit"
+            app:cardCornerRadius="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@id/mcv_frame">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_16">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10"
+                    android:scrollbars="none"
+                    tools:itemCount="10"
+                    tools:listitem="@layout/adapter_setting_colored_value" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn"
             style="@style/ButtonStyleYellow"
             android:layout_width="wrap_content"
             android:layout_height="56dp"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="@dimen/dp_16"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
             android:letterSpacing="0.01"
             android:onClick="@{() -> viewModel.onCreateVideoBtnClick()}"
             android:text="Create video"
-            app:layout_constraintTop_toBottomOf="@id/mcv_frame"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            />
+            app:layout_constraintTop_toBottomOf="@id/mcv_list_settings" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

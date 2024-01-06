@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="kz.narrator.app.data.models.ai_data.SettingsColoredValue" />
+
+        <variable
+            name="item"
+            type="SettingsColoredValue" />
+
+        <import type="kz.narrator.app.ui_common.callbacks.RecyclerViewItemClickCallback" />
+
+        <variable
+            name="recyclerViewItemClickCallback"
+            type="RecyclerViewItemClickCallback" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> recyclerViewItemClickCallback.onRecyclerViewItemClick(item)}"
+        android:background="@color/transparent"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/Font.Regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="title"
+            android:text="@{item.title}"
+            android:textColor="@color/accentColorRetro"
+            android:textSize="@dimen/sp_18" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:gravity="center_vertical">
+
+            <TextView
+                style="@style/Font.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="value"
+                android:text="@{item.value}"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20" />
+
+            <ImageView
+                android:id="@+id/iv_color"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                tools:background="@color/red"
+                android:layout_marginStart="@dimen/dp_12" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

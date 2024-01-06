@@ -129,23 +129,6 @@ class AttachFilesViewModel
 
         uriList.forEach {
 
-            //check uri
-            val extension = FileUtils.getMimeType(app, it)
-            val isImage = FileUtils.isImage(extension ?: "")
-
-            val base64 = if(isImage){
-                "\"${Base64Utils.getBase64(app, it)}\""
-            }else{
-                Base64Utils.convertToBase64(
-                    app.applicationContext,
-                    it
-                )?.replace("\"", "\\\"")?.replace("\\", "\\\\")?:""
-            }
-//            if (base64.length > MAX_BYTES) {
-//                _showSizeMaxError.postValue(Event(Unit))
-//                return
-//            }
-
             //
             var imageUpload = getImageChat(it)
 

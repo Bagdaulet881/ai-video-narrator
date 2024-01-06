@@ -7,20 +7,17 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kz.narrator.app.data.models.ai_data.LoggingState
-import kz.narrator.app.data.models.ai_data.MappedTimeStamps
-import kz.narrator.app.data.models.ai_data.MediaFileInfo
+import kz.narrator.app.data.models.ai_data.*
 import kz.narrator.app.data.models.custom.Scan
 import kz.narrator.app.data.models.network.Status
 import kz.narrator.app.ui.attach_files.AttachFilesCallback
 import kz.narrator.app.ui_common.callbacks.FFMpegCallback
 import kz.narrator.app.ui_common.callbacks.MainMediaCallback
+import kz.narrator.app.ui_common.callbacks.RecyclerViewItemClickCallback
 import kz.narrator.app.ui_common.callbacks.UILoggingCallback
 import kz.narrator.app.utils.convertToMicroseconds
-import kz.narrator.app.utils.extractSizeFromLog
 import kz.narrator.app.utils.formatTime
 import kz.narrator.app.utils.live_data.Event
-import java.io.File
 import java.util.*
 import javax.inject.Inject
 
@@ -28,6 +25,10 @@ class MainPageViewModel
 @Inject constructor(
     private val app: Application
 ) : AndroidViewModel(app) {
+
+    private val _listOfSettings = MutableLiveData<List<Any>>()
+    val listOfSettings: LiveData<List<Any>>
+        get() = _listOfSettings
 
     private val _listOfLogs = MutableLiveData<List<Any>>()
     val listOfLogs: LiveData<List<Any>>
@@ -77,7 +78,7 @@ class MainPageViewModel
 
     //Api DATA
     val bestshotMinisec = MutableLiveData<Long>()
-    val attachedMedia = MutableLiveData<Scan>()
+    val attachedMediaData = MutableLiveData<Scan>()
 
     val croppedImagesData = MutableLiveData<List<Bitmap>>()
     val analyzedTextData = MutableLiveData<String>()
@@ -132,6 +133,54 @@ class MainPageViewModel
         _listOfLogs.postValue(temp)
     }
 
+    fun setSettingsList(){
+        val temp = mutableListOf<Any>()
+
+        temp.add(
+            SettingsColoredValue(
+                title = "Text color",
+                value = "#FFE880"
+            )
+        )
+
+        temp.add(
+            SettingsTitleValue(
+                title = "Text size",
+                value = "34dp"
+            )
+        )
+
+        temp.add(
+            SettingsTitleValue(
+                title = "Analyzed text",
+                value = analyzedTextData.value?:""
+            )
+        )
+
+        temp.add(
+            SettingsTitleValue(
+                title = "Analyzed text timestamps",
+                value = (audioFileTimeStampsData.value?.size?:0).toString()
+            )
+        )
+
+        temp.add(
+            SettingsTitleValue(
+                title = "Audio status",
+                value = if(audioFileNameData.value?.isNotEmpty() == true) "Loaded!" else "Not found."
+            )
+        )
+
+        temp.add(
+            SettingsTitleValue(
+                title = "Video status",
+                value = if(attachedMediaData.value?.uri != null) "Exists!" else "Not found."
+            )
+        )
+
+        _listOfSettings.postValue(temp)
+    }
+
     /**
      *CALLBACK_ Main
      */
@@ -149,7 +198,7 @@ class MainPageViewModel
                 uiLoggingCallback.onLogState("MAIN: getSelectedMediaInfo", Status.SUCCESS)
                 return listOf(
                     MediaFileInfo(
-                        mediaFilePath = attachedMedia.value!!.uri,
+                        mediaFilePath = attachedMediaData.value!!.uri,
                         frameBestShot = bestshotMinisec.value
                     )
                 )
@@ -163,9 +212,14 @@ class MainPageViewModel
 
         override fun onImageAnalyzed(analyzedText: String) {
             Log.i("MSG", "BIG_LOGGER: onImageAnalyzed ${analyzedText}")
-            uiLoggingCallback.onLogState("MAIN: onImageAnalyzed", Status.SUCCESS)
-            analyzedTextData.postValue(analyzedText)
-            _runVoiceLab.postValue(Event(Unit))
+
+            if(analyzedText.contains("sorry, but I can't provide information")){
+                uiLoggingCallback.onLogState("OpenAi: onImageAnalyzed can't provide information", Status.ERROR)
+            }else{
+                uiLoggingCallback.onLogState("MAIN: onImageAnalyzed", Status.SUCCESS)
+                analyzedTextData.postValue(analyzedText)
+                _runVoiceLab.postValue(Event(Unit))
+            }
         }
 
         override fun getCroppedImages(): List<Bitmap> {
@@ -214,7 +268,7 @@ class MainPageViewModel
 
     fun setMediaAttachedStatus(isAttached: Boolean) {
         val media = attachFilesCallback.getAttachedFiles().get(0) as Scan
-        attachedMedia.postValue(media)
+        attachedMediaData.postValue(media)
         Log.i("MSG", "FFMPEG_LOG: media attached")
         _runVideoPlayer.postValue(Event(media.uri))
         showHideEditVideo(isAttached)
@@ -274,6 +328,7 @@ class MainPageViewModel
      */
 
     fun showHideEditVideo(state: Boolean){
+        setSettingsList()
         isMediaEditVisible.postValue(state)
         isMediaCreateVisible.postValue(false)
     }
@@ -283,17 +338,31 @@ class MainPageViewModel
         isMediaEditVisible.postValue(false)
     }
     /**
+     *
+     */
+    val recyclerViewItemClickCallback = object : RecyclerViewItemClickCallback {
+
+        override fun onRecyclerViewItemClick(any: Any) {
+
+        }
+
+    }
+
+    /**
      *BtnClickListeners
      */
+    fun onClearLogs(){
+        _listOfLogs.postValue(emptyList())
+    }
+
     fun onBottomSheetOpened(type: String) {
         when(type){
             "analyze" -> {
-                if (attachedMedia.value != null) {
+                if (attachedMediaData.value != null) {
                     _runVideoCrop.postValue(Event(Unit))
                 }
             }
             "create" -> {
-                _listOfLogs.postValue(emptyList())
                 _createVideo.postValue(Event(Unit))
             }
         }

@@ -65,8 +65,7 @@
                     android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btn_test"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/btn_test" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_video"
@@ -77,8 +76,7 @@
                     android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btn_audio"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/btn_audio" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_select"
@@ -89,8 +87,7 @@
                     android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btn_video"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/btn_video" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_timestamp"
@@ -100,20 +97,18 @@
                     android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btn_select"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/btn_select" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_logger"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="LOGGER_TEST"
                     android:onClick="@{() -> viewModel.onAnalyzeBtnClick()}"
+                    android:text="LOGGER_TEST"
                     android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btn_timestamp"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/btn_timestamp" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/group_tester"
@@ -168,6 +163,35 @@
                     app:constraint_referenced_ids="include_media_settings"
                     app:visibleGone="@{viewModel.isMediaCreateVisible()}"
                     tools:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/iv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:rotation="-30"
+                    android:src="@drawable/ic_name"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.32999998" />
+
+                <ImageView
+                    android:id="@+id/iv_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="82dp"
+                    android:src="@drawable/ic_number"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_name" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/group_splash"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:constraint_referenced_ids="iv_name,iv_number"
+                    app:visibleGone="@{!viewModel.isMediaCreateVisible() &amp;&amp; !viewModel.isMediaEditVisible()}"
+                    tools:visibility="visible" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>

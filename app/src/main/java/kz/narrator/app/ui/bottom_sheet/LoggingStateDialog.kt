@@ -48,6 +48,7 @@ class LoggingStateDialog: BaseBottomSheetDialogFragment() {
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
         binding.btnClose.setOnClickListener {
+            viewModel.onClearLogs()
             dismiss()
         }
     }

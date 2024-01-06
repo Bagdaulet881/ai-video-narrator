@@ -94,6 +94,7 @@ class TextOnVideo private constructor(private val context: Context) {
     }
 
     fun setSize(output: String): TextOnVideo {
+//        this.size = "main_h/${output}"
         this.size = output
         return this
     }
@@ -158,6 +159,7 @@ class TextOnVideo private constructor(private val context: Context) {
 //            callback!!.onProgress(message.text)
 //        })
 
+        callback!!.onLogStatus("video execute command", Status.LOADING)
         val rc = FFmpeg.execute(newListedCmd)
 
         if (rc == RETURN_CODE_SUCCESS) {
@@ -214,7 +216,8 @@ class TextOnVideo private constructor(private val context: Context) {
         var POSITION_CENTER_BOTTOM = "x=(main_w/2-text_w/2):y=main_h-(text_h*2)"
         var POSITION_CENTER_ALLIGN = "x=(w-text_w)/2: y=(h-text_h)/3"
 
-        var POSITION_NARRATING_TEXT = "x=(main_w/2-text_w/2):y=main_h-(text_h*6)"
+//        var POSITION_NARRATING_TEXT = "x=(main_w/2-text_w/2):y=main_h-(text_h*6)"
+        var POSITION_NARRATING_TEXT = "x=(main_w/2-text_w/2):y=main_h-(text_h+50)"
     }
 
     //val cmdTextOnVideo = arrayOf(

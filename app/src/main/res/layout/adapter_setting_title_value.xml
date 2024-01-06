@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="kz.narrator.app.data.models.ai_data.SettingsTitleValue" />
+
+        <variable
+            name="item"
+            type="SettingsTitleValue" />
+
+        <import type="kz.narrator.app.ui_common.callbacks.RecyclerViewItemClickCallback" />
+
+        <variable
+            name="recyclerViewItemClickCallback"
+            type="RecyclerViewItemClickCallback" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:onClick="@{() -> recyclerViewItemClickCallback.onRecyclerViewItemClick(item)}"
+        android:background="@color/transparent"
+        android:layout_height="wrap_content">
+        <TextView
+            style="@style/Font.Regular"
+            tools:text="title"
+            android:text="@{item.title}"
+            android:textColor="@color/accentColorRetro"
+            android:textSize="@dimen/sp_18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            style="@style/Font.Medium"
+            tools:text="valuevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevalue"
+            android:text="@{item.value}"
+            android:textColor="@color/black"
+            android:lines="2"
+            android:ellipsize="end"
+            android:textSize="@dimen/sp_20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</layout>

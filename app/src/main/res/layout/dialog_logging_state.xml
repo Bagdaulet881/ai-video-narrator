@@ -41,6 +41,7 @@
                 android:id="@+id/mcv_list"
                 android:layout_width="match_parent"
                 android:layout_height="170dp"
+                android:layout_marginTop="@dimen/dp_16"
                 app:cardCornerRadius="@dimen/dp_18"
                 app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"

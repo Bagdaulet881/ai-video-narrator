@@ -74,6 +74,7 @@ class SpeechWithTimestamp private constructor(
 
         Log.d("MSG", "Response, count ${response.resultsCount}")
         val results = response.resultsList
+        Log.d("MSG", "881GOOGLE_API_LOG: ${response.resultsList}")
         val alternative = results.get(0).getAlternativesList().get(0)
 
         val sntcs = mapTimeStamps(alternative.wordsList)
@@ -85,7 +86,7 @@ class SpeechWithTimestamp private constructor(
         val MAX_CHAR_PER_LINE = 23
         val timestamps = mutableListOf<MappedTimeStamps>()
 
-        val sentences = wordsList.splitIntoSublists(12)
+        val sentences = wordsList.splitIntoSublists(8)
 
         for (sentence in sentences) {
             val mappedSentence = MappedTimeStamps()

@@ -169,7 +169,7 @@ class AttachFilesUtils(
 
     fun openImageOrFilePicker() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "*/*" // Allow all types of files
+        intent.type = "video/*" // Allow all types of files
 
         /** TODO add
          * image/jpeg", "image/png", "image/bmp
@@ -187,7 +187,7 @@ class AttachFilesUtils(
          */
 
         try {
-            fragment.startActivityForResult(Intent.createChooser(intent, "Select Image or File"), RequestCodeEnums.PICK_IMAGE_OR_FILE.id)
+            fragment.startActivityForResult(Intent.createChooser(intent, "Select Videos"), RequestCodeEnums.PICK_IMAGE_OR_FILE.id)
         } catch (e: ActivityNotFoundException) {
             // Handle the exception if no suitable activity is found to handle the intent.
             // For example, display an error message or fallback to a different file picker method.

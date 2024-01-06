@@ -5,16 +5,22 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.cloud.speech.v1.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kz.narrator.app.R
 import kz.narrator.app.data.enums.app.RequestCodeEnums
 import kz.narrator.app.data.models.network.Status
@@ -72,6 +78,9 @@ class MainPageFragment : BaseFragment() {
         viewModel = getViewModelOfActivity(MainPageViewModel::class.java)
         playerView = binding.includeMediaEdit.playerView
         binding.viewModel = viewModel
+        binding.includeMediaSettings.recyclerView.layoutManager =
+            LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+
         ///test
         val file = File(requireContext().filesDir, "audio_name_20240102_053427.mp3")
         binding.tvFile.text = "FILE FOUND STATUS ${file.exists()}"
@@ -99,13 +108,22 @@ class MainPageFragment : BaseFragment() {
         binding.btnTimestamp.setOnClickListener {
             initGoogleSpeechTimeStamp()
         }
+//        viewModel.setSettingsList()
         ///
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        binding.includeMediaSettings.recyclerView.adapter =
+            SettingsAdapter(requireContext(), viewModel.recyclerViewItemClickCallback)
     }
 
     fun initGoogleSpeechTimeStamp() {
         SpeechWithTimestamp.with(requireActivity(), requireContext())
             .setUILoggingCallback(viewModel.uiLoggingCallback)
-            .getTimeStamps(viewModel.audioFileNameData.value?:"") //"audio_name_20240102_053427.mp3"
+            .getTimeStamps(
+                viewModel.audioFileNameData.value ?: ""
+            ) //"audio_name_20240102_053427.mp3"
     }
 
     private fun initAndObserveImageAnalyzerViewModel() {
@@ -119,12 +137,18 @@ class MainPageFragment : BaseFragment() {
                         viewModel.uiLoggingCallback.onLogState("OpenAI: request state", it.status)
                         when (it.status) {
                             Status.SUCCESS -> {
-                                viewModel.uiLoggingCallback.onLogState("OpenAI: response size ${it.data?.choices?.size}", Status.SUCCESS)
+                                viewModel.uiLoggingCallback.onLogState(
+                                    "OpenAI: response size ${it.data?.choices?.size}",
+                                    Status.SUCCESS
+                                )
                                 onOpenAiResourceSuccess(it.data)
                             }
                             Status.ERROR -> {
                                 handleExceptionView(it.exception)
-                                viewModel.uiLoggingCallback.onLogState("OpenAI: request error ${it.exception}", it.status)
+                                viewModel.uiLoggingCallback.onLogState(
+                                    "OpenAI: request error ${it.exception}",
+                                    it.status
+                                )
                             }
                             else -> {}
                         }
@@ -142,15 +166,24 @@ class MainPageFragment : BaseFragment() {
                 viewLifecycleOwner,
                 Observer {
                     it.getContentIfNotHandled()?.let {
-                        viewModel.uiLoggingCallback.onLogState("ElevenLabs: request state", it.status)
+                        viewModel.uiLoggingCallback.onLogState(
+                            "ElevenLabs: request state",
+                            it.status
+                        )
 
                         when (it.status) {
                             Status.SUCCESS -> {
-                                viewModel.uiLoggingCallback.onLogState("ElevenLabs: response", Status.SUCCESS)
+                                viewModel.uiLoggingCallback.onLogState(
+                                    "ElevenLabs: response",
+                                    Status.SUCCESS
+                                )
                                 onAudioFileResourceSuccess(it.data)
                             }
                             Status.ERROR -> {
-                                viewModel.uiLoggingCallback.onLogState("ElevenLabs: error ${it.exception}", Status.ERROR)
+                                viewModel.uiLoggingCallback.onLogState(
+                                    "ElevenLabs: error ${it.exception}",
+                                    Status.ERROR
+                                )
                             }
                             else -> {}
                         }
@@ -169,31 +202,8 @@ class MainPageFragment : BaseFragment() {
                 viewLifecycleOwner,
                 Observer {
                     it.getContentIfNotHandled()?.let {
-                        viewModel.attachedMedia.value?.uri?.let {
-                            val file = FileUtils.getVideoFileFromUri(requireContext(), it)
-
-                            if (file != null) {
-                                TextOnVideo.with(requireContext())
-                                    .setFile(file)
-                                    .setAudioFile(FileUtils.getAudioFile(requireContext(), viewModel.audioFileNameData.value?:""))
-//                                    .setAudioFile(
-//                                        FileUtils.getAudioFile(
-//                                            requireContext(),
-//                                            "audio_name_20240102_053427.mp3"
-//                                        )
-//                                    )
-                                    .setOutputPath(VideoFileUtils.outputPath + "video")
-                                    .setOutputFileName(FileUtils.getName() + ".mp4") //TODO 881 change name dynamic
-                                    .setFont(font) //Font .ttf of text
-                                    .setText("Text Displayed on Video!!") //Text to be displayed
-                                    .setTimestamps(viewModel.audioFileTimeStampsData.value)
-                                    .setColor("#FFE880") //Color of Text
-                                    .setSize("34") //Size of text
-                                    .addBorder(true) //This will add background with border on text
-                                    .setPosition(TextOnVideo.POSITION_NARRATING_TEXT) //Can be selected
-                                    .setCallback(viewModel.ffMpegCallback)
-                                    .draw()
-                            }
+                        viewModel.attachedMediaData.value?.uri?.let {
+                            executeFFMPEG(it)
                         }
                     }
                 }
@@ -252,6 +262,12 @@ class MainPageFragment : BaseFragment() {
                     }
                 }
             )
+
+            listOfSettings.observe(
+                viewLifecycleOwner,
+                Observer {
+                    (binding.includeMediaSettings.recyclerView.adapter as SettingsAdapter).submitList(it)
+                })
         }
 
         viewModel.runBottomSheet.observe(
@@ -275,9 +291,43 @@ class MainPageFragment : BaseFragment() {
 
     }
 
+    fun executeFFMPEG(uri: Uri) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val file = FileUtils.getVideoFileFromUri(requireContext(), uri)
 
-
-
+                if (file != null) {
+                    TextOnVideo.with(requireContext())
+                        .setFile(file)
+                        .setAudioFile(
+                            FileUtils.getAudioFile(
+                                requireContext(),
+                                viewModel.audioFileNameData.value ?: ""
+                            )
+                        )
+//                                    .setAudioFile(
+//                                        FileUtils.getAudioFile(
+//                                            requireContext(),
+//                                            "audio_name_20240102_053427.mp3"
+//                                        )
+//                                    )
+                        .setOutputPath(VideoFileUtils.outputPath + "video")
+                        .setOutputFileName(FileUtils.getName() + ".mp4") //TODO 881 change name dynamic
+                        .setFont(font) //Font .ttf of text
+                        .setText("Text Displayed on Video!!") //Text to be displayed
+                        .setTimestamps(viewModel.audioFileTimeStampsData.value)
+                        .setColor("#FFE880") //Color of Text
+                        .setSize("32") //Size of text
+                        .addBorder(true) //This will add background with border on text
+                        .setPosition(TextOnVideo.POSITION_NARRATING_TEXT) //Can be selected
+                        .setCallback(viewModel.ffMpegCallback)
+                        .draw()
+                }
+            } catch (e: Exception) {
+                Log.i("MSG", "881MAIN_ERROR_FFMPEG: ${e}")
+            }
+        }
+    }
 
 
     //----------------------------------------------------------------------------------------------
@@ -308,6 +358,7 @@ class MainPageFragment : BaseFragment() {
             exoPlayer.release()
         }
     }
+
     private fun initPlayer(mediaUri: Uri) {
         exoPlayer = ExoPlayer.Builder(requireContext()).build().apply {
             playWhenReady = isPlayerPlaying
