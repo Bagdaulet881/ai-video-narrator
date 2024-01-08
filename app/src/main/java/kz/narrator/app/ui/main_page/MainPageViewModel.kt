@@ -76,6 +76,11 @@ class MainPageViewModel
 
     val currentFrameMsFieldText = MutableLiveData<String>()
 
+    //Settings DATA
+    val voiceIdSelected = MutableLiveData<String>()
+    val scriptSelected = MutableLiveData<String>()
+    val commandSelected = MutableLiveData<String>()
+
     //Api DATA
     val bestshotMinisec = MutableLiveData<Long>()
     val attachedMediaData = MutableLiveData<Scan>()
@@ -213,7 +218,7 @@ class MainPageViewModel
         override fun onImageAnalyzed(analyzedText: String) {
             Log.i("MSG", "BIG_LOGGER: onImageAnalyzed ${analyzedText}")
 
-            if(analyzedText.contains("sorry, but I can't provide information")){
+            if(analyzedText.contains("sorry, but I can't provide information") || analyzedText.contains("я не могу обсудить")){
                 uiLoggingCallback.onLogState("OpenAi: onImageAnalyzed can't provide information", Status.ERROR)
             }else{
                 uiLoggingCallback.onLogState("MAIN: onImageAnalyzed", Status.SUCCESS)
@@ -253,6 +258,22 @@ class MainPageViewModel
                 //TODO 881 Log error
                 return ""
             }
+        }
+
+        override fun getVoiceId(): String {
+            return getVoiceIdSettings()
+        }
+
+        override fun getSystemScript(): String {
+            return getScript()
+        }
+
+        override fun getCommandScript(): String {
+            return getCommand()
+        }
+
+        override fun getLanguageSettings(): String {
+            return getLanguage()
         }
 
     }
@@ -346,6 +367,37 @@ class MainPageViewModel
 
         }
 
+    }
+
+
+    /**
+     *Params
+     */
+    fun getLanguage(): String {
+        val eng = "en-US"
+        val russ = "ru-RU"
+
+        return russ
+    }
+    fun getVoiceIdSettings(): String {
+        val voiceDavid = "y0DmfPiJ6oiErY1xHRE1"
+        val softboxV3 = "n5fgBi1EFlsxK3E4yd4R"
+
+        return softboxV3
+    }
+
+    fun getScript(): String {
+        val scriptDavid = "You are Sir David Attenborough. Narrate the picture of the human as if it is a nature documentary. Make it snarky and funny. Don't repeat yourself. Make it short. If I do anything remotely interesting, make a big deal about it!"
+        val scriptSoftbox = "You are a romantic girl from a Korean drama. Narrate the picture as if it's a scene from your story. Use some quotes from romantic hopeless korean dramas. Your description should be about homosapiens and, describe it from your view, short, make it interesting, big deal and touching as the love lines you deliver in your dramas, making hearts flutter with every word."
+
+        return scriptSoftbox
+    }
+
+    fun getCommand(): String {
+        val commandDavid = "Describe this Image"
+        val commandSoftbox = "Say or ask something about this image but in russian, use ' --- ' for pauses, use some emotions also, use some romantic k-drama quotes but dont write things like (this is a fictitious quote as I can't use real quotes from dramas)"
+
+        return commandSoftbox
     }
 
     /**

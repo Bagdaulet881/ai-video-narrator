@@ -85,7 +85,7 @@ class ImageAnalyzerViewModel
         requestScripts.add(
             ChatMessage(
                 role = ChatRole.System,
-                content = "You are Sir David Attenborough. Narrate the picture of the human as if it is a nature documentary. Make it snarky and funny. Don't repeat yourself. Make it short. If I do anything remotely interesting, make a big deal about it!"
+                content = mainCallback.getSystemScript()
             )
         )
         requestScripts.addAll(
@@ -107,7 +107,7 @@ class ImageAnalyzerViewModel
         val attachedImages = mainCallback.getCroppedImages()
         commands.add(
             TextPart(
-                text = "Describe this image"
+                text = mainCallback.getCommandScript()
             )
         )
         commands.add(

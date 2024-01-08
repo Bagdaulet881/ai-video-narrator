@@ -121,6 +121,7 @@ class MainPageFragment : BaseFragment() {
     fun initGoogleSpeechTimeStamp() {
         SpeechWithTimestamp.with(requireActivity(), requireContext())
             .setUILoggingCallback(viewModel.uiLoggingCallback)
+            .setMainCallback(viewModel.mainAnalyzeCallback)
             .getTimeStamps(
                 viewModel.audioFileNameData.value ?: ""
             ) //"audio_name_20240102_053427.mp3"

@@ -59,7 +59,7 @@ class TextToSpeechViewModel
         resultLoggingCallback.onLogState("ElevenLabs: request", Status.LOADING)
 
         val payload = AudioRequestPayload(
-//            model_id = "your_model_id",
+            model_id = "eleven_multilingual_v2",
             text = text
         )
 
@@ -67,9 +67,10 @@ class TextToSpeechViewModel
     }
 
     fun getVoiceParams(): String {
-        val voiceIdDavied: String = "y0DmfPiJ6oiErY1xHRE1"
+//        val voiceIdDavied: String = ""
+        val voiceId = mainCallback.getVoiceId()
         resultLoggingCallback.onLogState("ElevenLabs: selected voiceID", Status.SUCCESS)
 
-        return voiceIdDavied
+        return voiceId
     }
 }

@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import kz.narrator.app.R
 import kz.narrator.app.data.models.ai_data.MappedTimeStamps
 import kz.narrator.app.data.models.network.Status
+import kz.narrator.app.ui_common.callbacks.MainMediaCallback
 import kz.narrator.app.ui_common.callbacks.UILoggingCallback
 import kz.narrator.app.utils.file.FileUtils
 import kz.narrator.app.utils.splitIntoSublists
@@ -31,9 +32,15 @@ class SpeechWithTimestamp private constructor(
     }
 
     private lateinit var resultLoggingCallback: UILoggingCallback
+    private lateinit var mainAallback: MainMediaCallback
 
     fun setUILoggingCallback(callback: UILoggingCallback): SpeechWithTimestamp {
         this.resultLoggingCallback = callback
+        return this
+    }
+
+    fun setMainCallback(mainAnalyzeCallback: MainMediaCallback): SpeechWithTimestamp {
+        this.mainAallback = mainAnalyzeCallback
         return this
     }
 
@@ -57,7 +64,7 @@ class SpeechWithTimestamp private constructor(
                 RecognitionConfig.newBuilder()
                     .setEncoding(RecognitionConfig.AudioEncoding.MP3)
                     .setEnableWordTimeOffsets(true)
-                    .setLanguageCode("en-US")
+                    .setLanguageCode(mainAallback.getLanguageSettings())
                     .setSampleRateHertz(16000)
                     .build()
             )

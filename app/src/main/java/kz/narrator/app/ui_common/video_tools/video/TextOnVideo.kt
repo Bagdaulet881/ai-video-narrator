@@ -217,7 +217,7 @@ class TextOnVideo private constructor(private val context: Context) {
         var POSITION_CENTER_ALLIGN = "x=(w-text_w)/2: y=(h-text_h)/3"
 
 //        var POSITION_NARRATING_TEXT = "x=(main_w/2-text_w/2):y=main_h-(text_h*6)"
-        var POSITION_NARRATING_TEXT = "x=(main_w/2-text_w/2):y=main_h-(text_h+50)"
+        var POSITION_NARRATING_TEXT = "x=(main_w/2-text_w/2):y=main_h-(text_h+120)"
     }
 
     //val cmdTextOnVideo = arrayOf(
