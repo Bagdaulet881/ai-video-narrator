@@ -14,7 +14,7 @@ interface MainMediaCallback {
     fun onTextToVoice(audioFileName: String) //audio file name
     fun getAnalyzedText(): String
 
-    fun getVoiceId(): String
+    fun getVoiceIdSettings(): String
     fun getSystemScript(): String
     fun getCommandScript(): String
     fun getLanguageSettings(): String

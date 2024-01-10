@@ -10,11 +10,13 @@ import androidx.lifecycle.MutableLiveData
 import kz.narrator.app.data.models.ai_data.*
 import kz.narrator.app.data.models.custom.Scan
 import kz.narrator.app.data.models.network.Status
+import kz.narrator.app.data.preferences.Preferences
 import kz.narrator.app.ui.attach_files.AttachFilesCallback
 import kz.narrator.app.ui_common.callbacks.FFMpegCallback
 import kz.narrator.app.ui_common.callbacks.MainMediaCallback
 import kz.narrator.app.ui_common.callbacks.RecyclerViewItemClickCallback
 import kz.narrator.app.ui_common.callbacks.UILoggingCallback
+import kz.narrator.app.ui_common.video_tools.DefaultScriptsSettings
 import kz.narrator.app.utils.convertToMicroseconds
 import kz.narrator.app.utils.formatTime
 import kz.narrator.app.utils.live_data.Event
@@ -23,7 +25,8 @@ import javax.inject.Inject
 
 class MainPageViewModel
 @Inject constructor(
-    private val app: Application
+    private val app: Application,
+    private val preferences: Preferences
 ) : AndroidViewModel(app) {
 
     private val _listOfSettings = MutableLiveData<List<Any>>()
@@ -90,6 +93,14 @@ class MainPageViewModel
     val audioFileNameData = MutableLiveData<String>()
     val audioFileTimeStampsData = MutableLiveData<List<MappedTimeStamps>>()
 
+    init {
+        if(preferences.getVoiceScripts() == null){
+            preferences.setVoiceScripts(DefaultScriptsSettings.getDefaultList())
+        }
+        if(preferences.getSelectedScript() == null){
+            preferences.setSelectedScript(DefaultScriptsSettings.getDefaultSelect())
+        }
+    }
     /**
      *CALLBACK_ UI Log
      */
@@ -260,20 +271,20 @@ class MainPageViewModel
             }
         }
 
-        override fun getVoiceId(): String {
-            return getVoiceIdSettings()
+        override fun getVoiceIdSettings(): String {
+            return preferences.getSelectedScript()?.voiceId?:""
         }
 
         override fun getSystemScript(): String {
-            return getScript()
+            return preferences.getSelectedScript()?.script?:""
         }
 
         override fun getCommandScript(): String {
-            return getCommand()
+            return preferences.getSelectedScript()?.command?:""
         }
 
         override fun getLanguageSettings(): String {
-            return getLanguage()
+            return preferences.getSelectedScript()?.language?:""
         }
 
     }
@@ -349,12 +360,12 @@ class MainPageViewModel
      */
 
     fun showHideEditVideo(state: Boolean){
-        setSettingsList()
         isMediaEditVisible.postValue(state)
         isMediaCreateVisible.postValue(false)
     }
 
     fun showHideCreateVideo(state: Boolean){
+        setSettingsList()
         isMediaCreateVisible.postValue(state)
         isMediaEditVisible.postValue(false)
     }
@@ -367,37 +378,6 @@ class MainPageViewModel
 
         }
 
-    }
-
-
-    /**
-     *Params
-     */
-    fun getLanguage(): String {
-        val eng = "en-US"
-        val russ = "ru-RU"
-
-        return russ
-    }
-    fun getVoiceIdSettings(): String {
-        val voiceDavid = "y0DmfPiJ6oiErY1xHRE1"
-        val softboxV3 = "n5fgBi1EFlsxK3E4yd4R"
-
-        return softboxV3
-    }
-
-    fun getScript(): String {
-        val scriptDavid = "You are Sir David Attenborough. Narrate the picture of the human as if it is a nature documentary. Make it snarky and funny. Don't repeat yourself. Make it short. If I do anything remotely interesting, make a big deal about it!"
-        val scriptSoftbox = "You are a romantic girl from a Korean drama. Narrate the picture as if it's a scene from your story. Use some quotes from romantic hopeless korean dramas. Your description should be about homosapiens and, describe it from your view, short, make it interesting, big deal and touching as the love lines you deliver in your dramas, making hearts flutter with every word."
-
-        return scriptSoftbox
-    }
-
-    fun getCommand(): String {
-        val commandDavid = "Describe this Image"
-        val commandSoftbox = "Say or ask something about this image but in russian, use ' --- ' for pauses, use some emotions also, use some romantic k-drama quotes but dont write things like (this is a fictitious quote as I can't use real quotes from dramas)"
-
-        return commandSoftbox
     }
 
     /**

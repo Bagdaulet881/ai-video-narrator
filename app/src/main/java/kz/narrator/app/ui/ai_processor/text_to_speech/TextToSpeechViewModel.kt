@@ -7,10 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import kz.narrator.app.data.models.ai_data.AudioRequestPayload
 import kz.narrator.app.data.models.network.Status
-import kz.narrator.app.data.openai.OpenAiInstance
-import kz.narrator.app.data.preferences.Preferences
 import kz.narrator.app.data.repository.ai_repos.OpenAiRepositiry
-import kz.narrator.app.data.repository.appeal.AppealRepository
 import kz.narrator.app.ui_common.callbacks.MainMediaCallback
 import kz.narrator.app.ui_common.callbacks.UILoggingCallback
 import javax.inject.Inject
@@ -68,7 +65,7 @@ class TextToSpeechViewModel
 
     fun getVoiceParams(): String {
 //        val voiceIdDavied: String = ""
-        val voiceId = mainCallback.getVoiceId()
+        val voiceId = mainCallback.getVoiceIdSettings()
         resultLoggingCallback.onLogState("ElevenLabs: selected voiceID", Status.SUCCESS)
 
         return voiceId
