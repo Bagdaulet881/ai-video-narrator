@@ -33,6 +33,7 @@
             android:id="@+id/mcv_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:onClick="@{() -> viewModel.onSelectScriptBtnClick()}"
             app:cardBackgroundColor="@color/bg_peach_edit"
             app:cardCornerRadius="@dimen/dp_16"
             app:cardElevation="0dp"

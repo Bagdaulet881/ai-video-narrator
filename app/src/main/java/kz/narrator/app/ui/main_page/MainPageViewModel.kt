@@ -37,9 +37,17 @@ class MainPageViewModel
     val listOfLogs: LiveData<List<Any>>
         get() = _listOfLogs
 
+    private val _listOfScripts = MutableLiveData<List<Any>>()
+    val listOfScripts: LiveData<List<Any>>
+        get() = _listOfScripts
+
     private val _playAudio = MutableLiveData<Event<String>>()
     val playAudio: LiveData<Event<String>>
         get() = _playAudio
+
+    private val _dismissBottomSheet = MutableLiveData<Event<Unit>>()
+    val dismissBottomSheet: LiveData<Event<Unit>>
+        get() = _dismissBottomSheet
 
     private val _runBottomSheet = MutableLiveData<Event<String>>()
     val runBottomSheet: LiveData<Event<String>>
@@ -146,6 +154,12 @@ class MainPageViewModel
         temp.add(item)
 
         _listOfLogs.postValue(temp)
+    }
+
+    fun setScriptsList(){
+        val temp = preferences.getVoiceScripts()?: emptyList()
+
+        _listOfScripts.postValue(temp)
     }
 
     fun setSettingsList(){
@@ -359,7 +373,7 @@ class MainPageViewModel
      */
 
     fun showHideEditVideo(state: Boolean){
-        onSetScriptBtnClick(preferences.getSelectedScript()?:DefaultScriptsSettings.getDefaultSelect())
+        onSetScript(preferences.getSelectedScript()?:DefaultScriptsSettings.getDefaultSelect())
         isMediaEditVisible.postValue(state)
         isMediaCreateVisible.postValue(false)
     }
@@ -375,7 +389,12 @@ class MainPageViewModel
     val recyclerViewItemClickCallback = object : RecyclerViewItemClickCallback {
 
         override fun onRecyclerViewItemClick(any: Any) {
-
+            when (any) {
+                is ScriptAudioSettings -> {
+                    _dismissBottomSheet.postValue(Event(Unit))
+                    onSetScript(any)
+                }
+            }
         }
 
     }
@@ -383,7 +402,7 @@ class MainPageViewModel
     /**
      *BtnClickListeners
      */
-    fun onSetScriptBtnClick(selected: ScriptAudioSettings){
+    fun onSetScript(selected: ScriptAudioSettings){
         scriptSelected.postValue(selected)
         preferences.setSelectedScript(selected)
     }
@@ -402,6 +421,9 @@ class MainPageViewModel
             "create" -> {
                 _createVideo.postValue(Event(Unit))
             }
+            "selectScript" -> {
+                setScriptsList()
+            }
         }
     }
 
@@ -411,6 +433,10 @@ class MainPageViewModel
 
     fun onCreateVideoBtnClick() {
         _runBottomSheet.postValue(Event("create"))
+    }
+
+    fun onSelectScriptBtnClick() {
+        _runBottomSheet.postValue(Event("selectScript"))
     }
 
     fun onAttachFileBtnClick() {

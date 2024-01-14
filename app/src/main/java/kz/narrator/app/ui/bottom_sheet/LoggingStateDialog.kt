@@ -3,6 +3,7 @@ package kz.narrator.app.ui.bottom_sheet
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,7 +13,7 @@ import kz.narrator.app.databinding.DialogLoggingStateBinding
 import kz.narrator.app.ui.main_page.MainPageViewModel
 import kz.narrator.app.ui_common.base.BaseBottomSheetDialogFragment
 
-class LoggingStateDialog: BaseBottomSheetDialogFragment() {
+class LoggingStateDialog : BaseBottomSheetDialogFragment() {
 
     private lateinit var binding: DialogLoggingStateBinding
     private lateinit var viewModel: MainPageViewModel
@@ -43,7 +44,7 @@ class LoggingStateDialog: BaseBottomSheetDialogFragment() {
         return R.style.AppBottomSheetDialogTheme
     }
 
-    fun initView(){
+    fun initView() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
@@ -58,21 +59,47 @@ class LoggingStateDialog: BaseBottomSheetDialogFragment() {
         viewModel = getViewModelOfActivity(MainPageViewModel::class.java)
 
         binding.viewModel = viewModel
-        binding.recyclerView.adapter = LoggingAdapter(requireContext())
+        binding.recyclerView.adapter =
+            LoggingAdapter(viewModel.recyclerViewItemClickCallback, requireContext())
+
+        when (type) {
+            "selectScript" -> {
+                binding.recyclerView.setBackgroundColor(resources.getColor(R.color.white))
+                binding.tvTitle.visibility = View.GONE
+            }
+            else -> {
+                binding.recyclerView.setBackgroundColor(resources.getColor(R.color.black))
+                binding.tvTitle.visibility = View.VISIBLE
+            }
+        }
 
         observeViewModel()
     }
 
-    fun observeViewModel(){
+    fun observeViewModel() {
         viewModel.listOfLogs.observe(
             this,
             Observer {
                 (binding.recyclerView.adapter as LoggingAdapter).submitList(it)
-                if(it.size > 3){
+                if (it.size > 3) {
                     binding.recyclerView.smoothScrollToPosition(it.size - 1)
                 }
             })
 
+        viewModel.listOfScripts.observe(
+            this,
+            Observer {
+                (binding.recyclerView.adapter as LoggingAdapter).submitList(it)
+            })
+
+        viewModel.dismissBottomSheet.observe(
+            this,
+            Observer {
+                it.getContentIfNotHandled()?.let {
+                    dismiss()
+                }
+            }
+        )
         viewModel.onBottomSheetOpened(type)
     }
 }
