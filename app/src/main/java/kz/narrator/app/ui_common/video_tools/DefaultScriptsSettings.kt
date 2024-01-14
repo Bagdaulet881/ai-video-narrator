@@ -5,7 +5,7 @@ import kz.narrator.app.data.models.ai_data.ScriptAudioSettings
 class DefaultScriptsSettings {
     companion object{
         val NARRATOR_DAVID = "David A."
-        val NARRATOR_SOFTBOX = "SoftBox - Akonya"
+        val NARRATOR_SOFTBOX = "SoftBox - Akonya v3"
 
         fun getDefaultList(): List<ScriptAudioSettings> {
             val temp = mutableListOf<ScriptAudioSettings>()
@@ -32,8 +32,8 @@ class DefaultScriptsSettings {
             return temp
         }
 
-        fun getDefaultSelect(): ScriptAudioSettings? {
-            return getDefaultList().find { it.name == NARRATOR_SOFTBOX }
+        fun getDefaultSelect(): ScriptAudioSettings {
+            return getDefaultList().find { it.name == NARRATOR_SOFTBOX }!!
         }
     }
 }

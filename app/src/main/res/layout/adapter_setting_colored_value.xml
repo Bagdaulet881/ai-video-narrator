@@ -32,7 +32,7 @@
             tools:text="title"
             android:text="@{item.title}"
             android:textColor="@color/accentColorRetro"
-            android:textSize="@dimen/sp_18" />
+            android:textSize="@dimen/sp_16" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,7 +47,7 @@
                 tools:text="value"
                 android:text="@{item.value}"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_20" />
+                android:textSize="@dimen/sp_16" />
 
             <ImageView
                 android:id="@+id/iv_color"

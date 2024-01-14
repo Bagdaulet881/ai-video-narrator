@@ -20,6 +20,7 @@
             android:id="@+id/mcv_frame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:cardElevation="0dp"
             app:cardBackgroundColor="@color/bg_peach_edit"
             app:cardCornerRadius="@dimen/dp_16"
             app:layout_constraintTop_toTopOf="parent">
@@ -36,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:text="Video Settings"
                     android:textColor="@color/accentColorRetro"
-                    android:textSize="@dimen/sp_22"
+                    android:textSize="@dimen/sp_18"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +51,7 @@
             android:id="@+id/mcv_list_settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:cardElevation="0dp"
             android:layout_marginTop="@dimen/dp_16"
             app:cardBackgroundColor="@color/bg_peach_edit"
             app:cardCornerRadius="@dimen/dp_16"
@@ -76,7 +78,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn"
             style="@style/ButtonStyleYellow"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_gravity="bottom"
             android:layout_marginTop="@dimen/dp_16"
@@ -85,6 +87,7 @@
             android:onClick="@{() -> viewModel.onCreateVideoBtnClick()}"
             android:text="Create video"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/mcv_list_settings" />
 

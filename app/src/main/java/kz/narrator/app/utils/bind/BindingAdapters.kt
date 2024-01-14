@@ -15,7 +15,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.gif.GifDrawable
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kz.narrator.app.R
@@ -26,6 +34,51 @@ import java.util.*
 @BindingAdapter("app:errorText")
 fun setErrorMessage(view: TextInputLayout, errorMessage: String?) {
     view.error = errorMessage ?: ""
+}
+
+@BindingAdapter("setAnim")
+fun setAnim(iv: ImageView, drawable: Int) {
+    Glide
+        .with(iv.context)
+        .asGif()
+        .load(drawable)
+        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC))
+        .listener(
+            object : RequestListener<GifDrawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<GifDrawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+//                    viewModel.onAnimationLoadFailed()
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: GifDrawable?,
+                    model: Any?,
+                    target: Target<GifDrawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    if (resource != null) {
+//                    resource.setLoopCount(1000)
+                        resource.registerAnimationCallback(object :
+                            Animatable2Compat.AnimationCallback() {
+                            override fun onAnimationEnd(drawable: Drawable?) {
+//                                viewModel.onAnimationFinished()
+                            }
+                        })
+                    } else {
+//                        viewModel.onAnimationLoadFailed()
+                    }
+                    return false
+                }
+
+            }
+        )
+        .into(iv)
 }
 
 @BindingAdapter("app:errorText")

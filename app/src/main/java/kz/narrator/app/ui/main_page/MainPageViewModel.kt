@@ -80,9 +80,7 @@ class MainPageViewModel
     val currentFrameMsFieldText = MutableLiveData<String>()
 
     //Settings DATA
-    val voiceIdSelected = MutableLiveData<String>()
-    val scriptSelected = MutableLiveData<String>()
-    val commandSelected = MutableLiveData<String>()
+    val scriptSelected = MutableLiveData<ScriptAudioSettings>()
 
     //Api DATA
     val bestshotMinisec = MutableLiveData<Long>()
@@ -98,6 +96,7 @@ class MainPageViewModel
             preferences.setVoiceScripts(DefaultScriptsSettings.getDefaultList())
         }
         if(preferences.getSelectedScript() == null){
+            scriptSelected.postValue(DefaultScriptsSettings.getDefaultSelect())
             preferences.setSelectedScript(DefaultScriptsSettings.getDefaultSelect())
         }
     }
@@ -360,14 +359,15 @@ class MainPageViewModel
      */
 
     fun showHideEditVideo(state: Boolean){
+        onSetScriptBtnClick(preferences.getSelectedScript()?:DefaultScriptsSettings.getDefaultSelect())
         isMediaEditVisible.postValue(state)
         isMediaCreateVisible.postValue(false)
     }
 
     fun showHideCreateVideo(state: Boolean){
-        setSettingsList()
         isMediaCreateVisible.postValue(state)
         isMediaEditVisible.postValue(false)
+        setSettingsList()
     }
     /**
      *
@@ -383,6 +383,11 @@ class MainPageViewModel
     /**
      *BtnClickListeners
      */
+    fun onSetScriptBtnClick(selected: ScriptAudioSettings){
+        scriptSelected.postValue(selected)
+        preferences.setSelectedScript(selected)
+    }
+
     fun onClearLogs(){
         _listOfLogs.postValue(emptyList())
     }

@@ -116,6 +116,8 @@ class MainPageFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         binding.includeMediaSettings.recyclerView.adapter =
             SettingsAdapter(requireContext(), viewModel.recyclerViewItemClickCallback)
+
+        binding.anim = R.drawable.gif_number
     }
 
     fun initGoogleSpeechTimeStamp() {
