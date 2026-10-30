@@ -10,7 +10,6 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import kz.narrator.app.R
-import kz.narrator.app.utils.locale.LocaleUtils
 import javax.inject.Inject
 
 open class BaseActivity : AppCompatActivity(), HasAndroidInjector {
@@ -65,9 +64,5 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector {
         ExceptionHandler.handleExceptionDialog(this, exception)
     }
 
-    override fun attachBaseContext(newBase: Context?) {
-//        super.attachBaseContext(newBase)
-        super.attachBaseContext(LocaleUtils.setLocale(newBase))
-    }
 
 }

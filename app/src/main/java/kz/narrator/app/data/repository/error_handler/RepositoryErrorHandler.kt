@@ -5,10 +5,8 @@ import com.google.gson.Gson
 import kz.narrator.app.R
 import kz.narrator.app.data.models.network.Resource
 import kz.narrator.app.data.models.network.error.ApiError
-import kz.narrator.app.data.preferences.Preferences
 import kz.narrator.app.network.exceptions.ApiException
 import kz.narrator.app.network.exceptions.ConnectionTimeOutException
-import kz.narrator.app.network.exceptions.UnauthorizedException
 import kz.narrator.app.network.exceptions.UnknownException
 import okhttp3.ResponseBody
 import retrofit2.HttpException
@@ -18,13 +16,11 @@ import javax.inject.Inject
 class RepositoryErrorHandler
 @Inject constructor(
     private val gson: Gson,
-    private val app: Application,
-    private val preferences: Preferences
+    private val app: Application
 ) {
 
     companion object {
         private const val OTHER = 400
-        private const val UNAUTHORIZED = 401
     }
 
     /**
@@ -44,9 +40,6 @@ class RepositoryErrorHandler
             is UnknownException -> {
                 message = app.getString(R.string.network_server_error)
             }
-            is UnauthorizedException -> {
-                message = exception.message
-            }
         }
 
         return Resource.error(msg = message, data = null, exception = exception)
@@ -59,10 +52,6 @@ class RepositoryErrorHandler
             when (httpStatusCode) {
                 OTHER -> {
                     ApiException(error)
-                }
-                UNAUTHORIZED -> {
-                    preferences.removeAppToken()
-                    UnauthorizedException(error?.message)
                 }
                 else -> {
                     ApiException(error)
@@ -90,9 +79,6 @@ class RepositoryErrorHandler
             is UnknownException -> {
                 message = app.getString(R.string.network_server_error)
             }
-            is UnauthorizedException -> {
-                message = exception.message
-            }
         }
 
         return Resource.error(msg = message, data = null, exception = exception)
@@ -107,10 +93,6 @@ class RepositoryErrorHandler
                     when (e.code()) {
                         OTHER -> {
                             ApiException(error)
-                        }
-                        UNAUTHORIZED -> {
-                            preferences.removeAppToken()
-                            UnauthorizedException(error.message)
                         }
                         else -> {
                             ApiException(error)

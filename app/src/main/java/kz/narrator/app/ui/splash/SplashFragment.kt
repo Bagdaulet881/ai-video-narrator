@@ -40,18 +40,6 @@ class SplashFragment : BaseFragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.openOnboard.observe(
-            viewLifecycleOwner,
-            Observer {
-                it.getContentIfNotHandled()?.let {
-                    findNavController().navigate(
-                        SplashFragmentDirections.actionSplashFragmentToNavigationAuthType(),
-                        getSlideLeftAnimBuilder().setPopUpTo(R.id.splashFragment, true).build()
-                    )
-                }
-            }
-        )
-
         viewModel.openMainActivity.observe(
             viewLifecycleOwner,
             Observer {

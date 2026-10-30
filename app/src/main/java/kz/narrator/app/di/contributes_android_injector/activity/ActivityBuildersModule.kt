@@ -11,21 +11,14 @@ abstract class ActivityBuildersModule {
 
     @ContributesAndroidInjector(
         modules = [
-            SplashFragmentsBuildersModule::class,
-            OnboardFragmentsBuildersModule::class,
-            AuthTypeFragmentsBuildersModule::class,
-            AuthenticationFragmentsBuildersModule::class
+            SplashFragmentsBuildersModule::class
         ]
     )
     internal abstract fun splashActivity(): SplashActivity
 
     @ContributesAndroidInjector(
         modules = [
-            AboutFragmentsBuildersModule::class,
-            MainPageFragmentsBuildersModule::class,
-            OnboardFragmentsBuildersModule::class,
-            AuthenticationFragmentsBuildersModule::class,
-            AuthTypeFragmentsBuildersModule::class
+            MainPageFragmentsBuildersModule::class
         ]
     )
     internal abstract fun mainActivity(): MainActivity

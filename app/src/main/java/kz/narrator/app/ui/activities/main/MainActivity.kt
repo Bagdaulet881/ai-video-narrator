@@ -19,7 +19,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationBarView
-import com.google.firebase.analytics.FirebaseAnalytics
 import kz.narrator.app.R
 import kz.narrator.app.databinding.ActivityMainBinding
 import kz.narrator.app.ui.main_page.MainPageViewModel
@@ -34,7 +33,6 @@ class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
     lateinit var mainPageviewModel: MainPageViewModel
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private lateinit var navController: NavController
 
@@ -48,8 +46,6 @@ class MainActivity : BaseActivity() {
         viewModel = getViewModel(MainViewModel::class.java)
         mainPageviewModel = getViewModel(MainPageViewModel::class.java)
         binding.viewModel = viewModel
-
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         if (Environment.isExternalStorageManager()) {
             // The app has been granted the MANAGE_EXTERNAL_STORAGE permission
@@ -86,19 +82,9 @@ class MainActivity : BaseActivity() {
     private fun initOnDestinationChangedListener() {
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
-                R.id.aboutFragment -> {
-                    binding.appBarLayout.visibility = View.VISIBLE
-                    binding.bottomNavigation.visibility = View.VISIBLE
-                }
                 R.id.mainPageFragment -> {
                     binding.appBarLayout.visibility = View.GONE
                     binding.bottomNavigation.visibility = View.VISIBLE
-                }
-                R.id.authenticationFragment,
-                R.id.registrationFragment,
-                R.id.resetPasswordFragment -> {
-                    binding.appBarLayout.visibility = View.VISIBLE
-                    binding.bottomNavigation.visibility = View.GONE
                 }
                 else -> {
                     binding.bottomNavigation.visibility = View.GONE

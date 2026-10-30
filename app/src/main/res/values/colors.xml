@@ -10,20 +10,11 @@
     <color name="_49A9B8">#49A9B8</color>
 
     <color name="windowBg">#FFFFFF</color>
-    <!--Navigation color-->
-    <color name="_9BA3AF">#9BA3AF</color>
-    <color name="chartExcellent">#00e400</color>
-    <color name="chartOk">#ffff00</color>
-    <color name="chartAverage">#ff7e00</color>
-    <color name="chartSatisfactory">#f00000</color>
-    <color name="chartBadly">#99004c</color>
-    <color name="chartAwful">#7e0023</color>
 
     <!---->
     <color name="bg_peach_edit">#F3ECD9</color>
     <color name="accentColorRetro">#5E3926</color>
     <color name="btnColorRetro">#FDF5D1</color>
-    <color name="btnTextColorRetro">#63342A</color>
 
 
     <!---->
@@ -37,128 +28,51 @@
     <color name="transparent">#00000000</color>
 
     <color name="white">#FFFFFF</color>
-    <color name="whitish">#EBFFFFFF</color>
-    <color name="white10">#1AFFFFFF</color>
-    <color name="white30">#4DFFFFFF</color>
-    <color name="white40">#66FFFFFF</color>
-    <color name="white50">#80FFFFFF</color>
 
     <color name="black">#000000</color>
-    <color name="black20">#33000000</color>
-    <color name="black30">#4D000000</color>
     <color name="black40">#66000000</color>
-    <color name="black50">#80000000</color>
-    <color name="black60">#99000000</color>
-    <color name="black70">#B3000000</color>
-    <color name="black80">#CC000000</color>
-    <color name="black90">#E6000000</color>
-    <color name="blackMain">#212429</color>
 
     <color name="backgroundColor">#FFFFFF</color>
 
-    <!--Air Conditions-->
 
     <color name="divider">#F3F3F4</color>
-    <color name="_2A373C">#2A373C</color>
 
-    <!--Form-->
 
-    <color name="_114058">#114058</color>
     <color name="buttonColor">#2196C3</color>
 
-    <color name="onCheck">#F59E0B</color>
-    <!--Icon color-->
-    <color name="pinAqi0">#86E338</color>
-    <color name="pinAqi1">#FEFF39</color>
-    <color name="pinAqi2">#E08201</color>
-    <color name="pinAqi3">#D82100</color>
-    <color name="pinAqi4">#810F49</color>
-    <color name="pinAqi5">#6A0A1F</color>
 
-    <!--Suggs and reps-->
-    <color name="_E5E5E5">#E5E5E5</color>
 
-    <!--Main page-->
-    <color name="indicatorBackgroundGood">#D1FAE5</color>
-    <color name="indicatorBackgroundMiddle">#FFFBEB</color>
-    <color name="indicatorBackgroundBad">#FEE2E2</color>
 
-    <color name="indicatorGood">#059669</color>
-    <color name="indicatorMiddle">#D97706</color>
-    <color name="indicatorBad">#DC2626</color>
 
-    <color name="darkBlue">#2A373C</color>
-    <color name="formBackground">#5BA9B4</color>
 
-    <!--Weather forecast-->
-    <color name="weatherBackground">#73BDFF</color>
-    <color name="lowDirty">#13B17B</color>
-    <color name="middleDirty">#F49E0A</color>
-    <color name="background_category">#00e400</color>
-    <color name="highDirty">#E84545</color>
 
-    <color name="progressBarStroke">#F3F5F6</color>
 
     <color name="statusSuccess">#56CA61</color>
     <color name="statusError">#EF6B6B</color>
     <!---->
-    <color name="E01515">#E01515</color>
     <color name="EBEBEB">#EBEBEB</color>
 
     <!---->
     <color name="E61E5A">#EBEBEB</color>
     <color name="_058B27">#058B27</color>
     <color name="greenSwitch">#32D74B</color>
-    <color name="_03B7BC">#03B7BC</color>
-    <color name="CC282E">#CC282E</color>
     <color name="_979797">#979797</color>
-    <color name="DBCDB3">#DBCDB3</color>
-    <color name="tableColor">#D1D5DB</color>
 
-    <color name="EEEEEE">#EEEEEE</color>
-    <color name="_515151">#515151</color>
     <color name="_393939">#393939</color>
-    <color name="C4C4C4">#C4C4C4</color>
-    <color name="A4A4A4">#A4A4A4</color>
-    <color name="_767676">#767676</color>
     <color name="DEDEDE">#DEDEDE</color>
-    <color name="B9B9B9">#B9B9B9</color>
-    <color name="_111827">#111827</color>
     <color name="F3F4F6">#F3F4F6</color>
 
-    <color name="AC0031">#AC0031</color>
-    <color name="_219653">#219653</color>
-    <color name="_9CA3AF">#9CA3AF</color>
-    <color name="_F9FAFB">#F9FAFB</color>
-    <color name="_6B7280">#6B7280</color>
-    <color name="_E5E7EB">#E5E7EB</color>
 
     <color name="formColor">#ACB5BD</color>
     <color name="colorPrimary20">#33E61E5A</color>
 
-    <color name="statistics_bar_graph_x_axis_label_color">#C0C7CE</color>
-    <color name="statistics_bar_graph_blue">#49A9B8</color>
-    <color name="statistics_bar_graph_blue_50">#8049A9B8</color>
 
-    <color name="statistics_bar_graph_green">#10B981</color>
-    <color name="statistics_bar_graph_green_light">#D1FAE5</color>
 
-    <color name="statistics_bar_graph_red">#DC2626</color>
-    <color name="statistics_bar_graph_red_light">#FEE2E2</color>
-    <color name="colorMiddleGray">@color/_801A2A4C</color>
     <color name="_801A2A4C">#801A2A4C</color>
-    <color name="_5CBC72">#5CBC72</color>
 
-    <color name="air_level1">#CC3CAB5B</color>
-    <color name="air_level2">#CC9BCC5D</color>
-    <color name="air_level3">#CCEAD03B</color>
-    <color name="air_level4">#CCEB9138</color>
-    <color name="air_level5">#CCD82933</color>
-    <color name="air_level6">#CC8E1921</color>
-    <color name="air_level7">#CC8E1921</color>
-    <color name="humidity">#CC60A5FA</color>
 
-    <color name="_363853">#363853</color>
+    <!-- previously provided transitively by a removed library -->
+    <color name="red">#d32f2f</color>
 </resources>
 
         <!--

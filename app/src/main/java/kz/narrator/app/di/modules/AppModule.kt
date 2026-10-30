@@ -1,9 +1,11 @@
 package kz.narrator.app.di.modules
 
 import dagger.Module
+import kz.narrator.app.di.modules.api.AiApiModule
 import kz.narrator.app.di.modules.common.NetworkModule
 import kz.narrator.app.di.modules.common.PreferenceModule
 import kz.narrator.app.di.modules.common.UtilsModule
+import kz.narrator.app.di.modules.repository.AiRepositoryModule
 import kz.narrator.app.di.view_model.base.ViewModelFactoryModule
 
 @Module(
@@ -13,10 +15,10 @@ import kz.narrator.app.di.view_model.base.ViewModelFactoryModule
         UtilsModule::class,
 
         //api
-        ApiModule::class,
+        AiApiModule::class,
 
         //repository
-        RepositoryModule::class,
+        AiRepositoryModule::class,
 
         //
         ViewModelFactoryModule::class,

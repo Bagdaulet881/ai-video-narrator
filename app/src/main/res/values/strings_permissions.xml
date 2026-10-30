@@ -31,17 +31,5 @@
     <string name="permission_not_granted_storage">Нет доступа к памяти Вашего телефона.</string>
 
     <!--Location-->
-    <string name="permission_rationale_title_location">Моя геолокация</string>
-    <string name="permission_rationale_message_location">Разреши доступ к своей геолокации и мы покажем тебе ближайшие atm и отделения</string>
-    <string name="permission_rationale_message_location_short">Разрешите доступ к своей геолокации</string>
-    <string name="permission_message_location_hardware_off">Пожалуйста, включите определение местоположения по GPS в настройках вашей системы, чтобы видеть ваше местоположение</string>
-    <string name="permission_message_location_hardware_off_short">Пожалуйста, включите определение местоположения по GPS</string>
-
-    <string name="permission_settings_title_location">Моя геолокация</string>
-    <string name="permission_settings_message_location">Доступ к геолокации запрещен. Включи разрешение
-        \"Местоположение\" в настройках устройства.
-    </string>
-
-    <string name="permission_not_granted_location">Нет доступа к геолокации телефона.</string>
 
 </resources>

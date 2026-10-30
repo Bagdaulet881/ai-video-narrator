@@ -20,23 +20,6 @@
         android:title="Scripts"
         app:showAsAction="always"/>
 
-<!--    <item android:id="@+id/navigation_map"-->
-<!--        android:enabled="true"-->
-<!--        android:icon="@drawable/ic_nav_location"-->
-<!--        android:title="@string/navigation_map"-->
-<!--        app:showAsAction="always"/>-->
-<!---->
-<!--    <item android:id="@+id/navigation_statistic"-->
-<!--        android:enabled="true"-->
-<!--        android:icon="@drawable/ic_nav_chart"-->
-<!--        android:title="@string/navigation_statistic"-->
-<!--        app:showAsAction="always"/>-->
-<!---->
-<!--    <item android:id="@+id/navigation_more"-->
-<!--        android:enabled="true"-->
-<!--        android:icon="@drawable/ic_nav_more_circle"-->
-<!--        android:title="@string/navigation_more"-->
-<!--        app:showAsAction="always"/>-->
 
 
 </menu>

@@ -2,30 +2,11 @@
 <resources>
 
     <string name="loading">Загрузка...</string>
-
-    <string name="error">Ошибка</string>
-    <string name="error_occurred">Произошла ошибка</string>
     <string name="ok">ОК</string>
-    <!--<string name="cancel">Отмена</string>-->
 
-    <string name="retry">Повторить попытку</string>
-
-
-    <!--<string name="network_loading">Загрузка...</string>-->
     <string name="network_connection_error">Сеть недоступна. Проверьте соединение с интернетом.</string>
     <string name="network_server_error">Сервис временно недоступен. Попробуйте позже.</string>
-    <string name="network_weather_server_error">Сервис погоды временно недоступен. Попробуйте позже.</string>
-    <!--<string name="network_obtaining_data">Получение данных. Подождите, пожалуйста.</string>-->
-    <!--<string name="network_obtaining_data_fail">Произошла ошибка при получении данных.</string>-->
-    <!--<string name="network_try_again">Повторить попытку</string>-->
-
-    <!--<string name="network_no_data">Нет данных</string>-->
-
-    <!--<string name="need_update_title">Доступна новая версия</string>-->
-    <!--<string name="need_update_message">Просьба обновить приложение для продолжения работы</string>-->
-    <!--<string name="need_update_button">Обновить</string>-->
 
     <string name="network_error">Ошибка</string>
-    <!--<string name="network_error_occurred">Произошла ошибка</string>-->
 
 </resources>

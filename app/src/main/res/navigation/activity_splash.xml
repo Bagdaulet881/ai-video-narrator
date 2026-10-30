@@ -5,6 +5,5 @@
     app:startDestination="@+id/navigation_splash">
 
     <include app:graph="@navigation/splash" />
-    <include app:graph="@navigation/auth_type" />
 
 </navigation>

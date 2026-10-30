@@ -2,13 +2,15 @@ package kz.narrator.app.ui.ai_processor.speech_to_text
 
 import android.app.Activity
 import android.content.Context
+import android.util.Base64
 import android.util.Log
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.speech.v1.*
 import com.google.protobuf.ByteString
+import java.io.ByteArrayInputStream
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kz.narrator.app.R
+import kz.narrator.app.BuildConfig
 import kz.narrator.app.data.models.ai_data.MappedTimeStamps
 import kz.narrator.app.data.models.network.Status
 import kz.narrator.app.ui_common.callbacks.MainMediaCallback
@@ -22,7 +24,7 @@ class SpeechWithTimestamp private constructor(
 ) {
 
     private val speechClient: SpeechClient by lazy {
-        activity.applicationContext.resources?.openRawResource(R.raw.google_cloud_credentials)
+        ByteArrayInputStream(Base64.decode(BuildConfig.GOOGLE_CLOUD_CREDENTIALS_BASE64, Base64.DEFAULT))
             .use {
                 SpeechClient.create(
                     SpeechSettings.newBuilder()

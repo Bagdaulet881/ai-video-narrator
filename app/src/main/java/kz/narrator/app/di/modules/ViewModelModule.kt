@@ -7,12 +7,7 @@ import kz.narrator.app.di.view_model.*
     includes = [
         ActivityViewModelModule::class,
         SplashViewModelModule::class,
-        AboutViewModelModule::class,
-        MainPageViewModelModule::class,
-        AuthTypeViewModelModule::class,
-        AuthenticationViewModelModule::class,
-        RegistrationViewModelModule::class,
-        OnboardViewPagerViewModelModule::class
+        MainPageViewModelModule::class
     ]
 )
 class ViewModelModule {

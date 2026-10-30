@@ -5,31 +5,14 @@ import androidx.appcompat.app.AlertDialog
 import kz.narrator.app.R
 import kz.narrator.app.network.exceptions.ApiException
 import kz.narrator.app.network.exceptions.ConnectionTimeOutException
-import kz.narrator.app.network.exceptions.UnauthorizedException
 import kz.narrator.app.network.exceptions.UnknownException
 
 object ExceptionHandler {
 
     fun handleException(context: Context, exception: Exception?) {
-        exception?.let {
-            when (it) {
-                is UnauthorizedException -> {
-//                    val intent = UnauthorizedActivity.getIntentNewTask(context!!)
-//                    context.startActivity(intent)
-                }
-            }
-        }
     }
 
     fun handleExceptionView(context: Context, exception: Exception?) {
-        exception?.let {
-            when (it) {
-                is UnauthorizedException -> {
-//                    val intent = UnauthorizedActivity.getIntentNewTask(context!!)
-//                    context.startActivity(intent)
-                }
-            }
-        }
     }
 
     fun handleExceptionDialog(context: Context, exception: Exception?) {
@@ -66,10 +49,6 @@ object ExceptionHandler {
                         title = context.getString(R.string.network_error),
                         message = context.getString(R.string.network_server_error)
                     )
-                }
-                is UnauthorizedException -> {
-//                    val intent = UnauthorizedActivity.getIntentNewTask(context!!)
-//                    context.startActivity(intent)
                 }
             }
         }

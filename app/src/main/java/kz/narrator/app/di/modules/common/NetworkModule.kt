@@ -8,8 +8,6 @@ import dagger.Module
 import dagger.Provides
 import kz.narrator.app.BuildConfig
 import kz.narrator.app.data.enums.app.DatePatternEnums
-import kz.narrator.app.network.interceptors.AuthTokenInterceptor
-import kz.narrator.app.network.utils.HeaderUtils
 import kz.narrator.app.utils.convertStringToDate
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -29,16 +27,10 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAuthTokenInterceptor(headerUtils: HeaderUtils): AuthTokenInterceptor {
-        return AuthTokenInterceptor(headerUtils)
-    }
-
-    @Provides
-    @Singleton
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         val logging = HttpLoggingInterceptor()
 
-        if (BuildConfig.IS_DEBUG) {
+        if (BuildConfig.DEBUG) {
             logging.level = HttpLoggingInterceptor.Level.BODY
 
         } else {
@@ -51,12 +43,10 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(
-        authTokenInterceptor: AuthTokenInterceptor,
         httpLoggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
 
         val builder = OkHttpClient.Builder()
-            .addInterceptor(authTokenInterceptor)
             .addInterceptor(httpLoggingInterceptor)
             .connectTimeout(CONNECTION_TIMEOUT_IN_MS.toLong(), TimeUnit.MILLISECONDS)
             .readTimeout(READ_TIMEOUT_IN_MS.toLong(), TimeUnit.MILLISECONDS)
@@ -92,7 +82,7 @@ class NetworkModule {
         okHttpClient: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.URL_BASE)
+            .baseUrl(BuildConfig.ELEVENLABS_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
             .build()

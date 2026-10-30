@@ -1,6 +1,7 @@
 package kz.narrator.app.data.openai
 
 import android.util.Log
+import kz.narrator.app.BuildConfig
 import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
@@ -11,7 +12,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class OpenAiInstance
 @Inject constructor() {
-    private val openAiKey = "***REMOVED***"
+    private val openAiKey = BuildConfig.OPENAI_API_KEY
 
     val openAiConfig = OpenAIConfig(
         token = openAiKey,

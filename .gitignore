@@ -38,3 +38,21 @@ obj/
 /captures
 .externalNativeBuild
 .cxx
+
+# Secrets
+local.properties
+secrets/
+*.jks
+*.keystore
+google-services.json
+google_cloud_credentials.json
+
+# Generated media (narration audio / rendered videos)
+*.mp4
+*.mp3
+*.wav
+*.m4a
+*.srt
+
+# Personal notes
+NOTES_FOR_ME.md

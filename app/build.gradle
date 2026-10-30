@@ -8,9 +8,18 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 
-apply plugin: 'com.google.gms.google-services'
-
-//apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
+// API keys live in local.properties (gitignored). See local.properties.example.
+def localProps = new Properties()
+def localPropsFile = rootProject.file('local.properties')
+if (localPropsFile.exists()) {
+    localPropsFile.withInputStream { localProps.load(it) }
+}
+def localProp = { String key -> localProps.getProperty(key, '') }
+def googleCloudCredentialsBase64 = {
+    def path = localProp('GOOGLE_CLOUD_CREDENTIALS_FILE')
+    def file = path ? rootProject.file(path) : null
+    return (file != null && file.exists()) ? file.bytes.encodeBase64().toString() : ''
+}
 
 android {
     compileSdkVersion 33
@@ -25,6 +34,11 @@ android {
 
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
+
+        buildConfigField "String", "OPENAI_API_KEY", "\"${localProp('OPENAI_API_KEY')}\""
+        buildConfigField "String", "ELEVENLABS_API_KEY", "\"${localProp('ELEVENLABS_API_KEY')}\""
+        buildConfigField "String", "ELEVENLABS_BASE_URL", '"https://api.elevenlabs.io/"'
+        buildConfigField "String", "GOOGLE_CLOUD_CREDENTIALS_BASE64", "\"${googleCloudCredentialsBase64()}\""
     }
     buildTypes {
         release {
@@ -39,16 +53,12 @@ android {
         dev {
             dimension "default"
             applicationId "kz.narrator.app"
-            buildConfigField "String", "URL_BASE", '"https://example.com/api/"'
-            buildConfigField "boolean", "IS_DEBUG", "true"
             buildConfigField "String", "FILE_PROVIDER", '"kz.narrator.app.dev.fileprovider"'
             manifestPlaceholders = [manifestFileProvider: "kz.narrator.app.dev.fileprovider"]
         }
         prod {
             dimension "default"
             applicationId "kz.narrator.app"
-            buildConfigField "String", "URL_BASE", '"https://example.com/api/"'
-            buildConfigField "boolean", "IS_DEBUG", "true"
             buildConfigField "String", "FILE_PROVIDER", '"kz.narrator.app.fileprovider"'
             manifestPlaceholders = [manifestFileProvider: "kz.narrator.app.fileprovider"]
         }
@@ -66,15 +76,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-//    android {
-//        defaultConfig {
-//            manifestPlaceholders = [
-//                onesignal_app_id: '***REMOVED***',
-//                onesignal_google_project_number: 'REMOTE'
-//            ]
-//        }
-//    }
 
     kotlinOptions {
         jvmTarget = "1.8"
@@ -115,7 +116,6 @@ dependencies {
     implementation "androidx.viewpager:viewpager:$viewpager"
 
     implementation "com.google.android.material:material:$androidMaterial"
-    implementation "com.google.android:flexbox:$androidFlexbox"
 
     //KTX
     implementation "androidx.core:core-ktx:1.10.0"
@@ -167,14 +167,10 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
 
-    implementation "jp.wasabeef:glide-transformations:$glideTransformationsVersion"
-
     //ANIMATION
     implementation "com.airbnb.android:lottie:$lottieVersion"
 
     //UTILS
-    implementation "com.redmadrobot:inputmask:$inputMaskVersion"
-    implementation "com.romandanylyk:pageindicatorview:$pageindicatorviewVersion"
 
     implementation "net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:2.3.0"
 
@@ -182,53 +178,12 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
 
-    //otp
-    implementation "com.github.aabhasr1:OtpView:1.0.6"
-
     //
     api "androidx.viewpager2:viewpager2:1.0.0-alpha05"
 
-    implementation 'com.applandeo:material-calendar-view:1.6.0'
-
-    //Sms Retriever
-    implementation "com.google.android.gms:play-services-auth-api-phone:18.0.1"
-
-    //Google Maps
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
-
-    //Dots Indicator
-    implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:4.1.2'
-
-    implementation 'gun0912.ted:tedbottompicker:2.0.1'
-
-    //Firebase
-    implementation platform('com.google.firebase:firebase-bom:28.2.0')
-    implementation 'com.google.firebase:firebase-analytics'
-
-    //Firebase - Auth
-    implementation 'com.google.firebase:firebase-auth:19.0.0'
-    implementation 'com.google.android.gms:play-services-auth:19.0.0'
-    //Facebook Auth sdk
-    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
-    implementation 'com.google.firebase:firebase-auth-ktx'
-    implementation("com.google.firebase:firebase-iid")
 
     //Motion Layout
     implementation 'androidx.constraintlayout:constraintlayout:2.2.0-alpha09'
-
-    //HTML parser
-    implementation 'org.jsoup:jsoup:1.13.1'
-
-    //chart
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
-    // mask
-    implementation 'ru.egslava:MaskedEditText:1.0.5'
-    implementation 'ru.egslava:MaskedEditText:1.0.5'
-
-    //onesignal
-//    implementation 'com.onesignal:OneSignal:3.11.4'
 
 
     //OPEN_AI

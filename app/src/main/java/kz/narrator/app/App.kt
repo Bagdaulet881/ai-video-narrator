@@ -2,7 +2,6 @@ package kz.narrator.app
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Configuration
 import android.util.Log
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDex
@@ -12,16 +11,11 @@ import com.aallam.openai.client.OpenAIConfig
 //import com.github.hiteshsondhi88.libffmpeg.FFmpeg
 //import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler
 //import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException
-//import com.onesignal.OneSignal
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import kz.narrator.app.data.app_lifecycle.ApplicationObserver
 import kz.narrator.app.di.utils.AppInjector
-//import kz.narrator.app.one_signal.AppNotificationOpenedHandler
-//import kz.narrator.app.one_signal.AppNotificationReceivedHandler
-//import kz.narrator.app.one_signal.handler.AppNotificationHandler
-import kz.narrator.app.utils.locale.LocaleUtils
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -36,8 +30,6 @@ class App : Application(), HasAndroidInjector {
 //    @Inject
 //    lateinit var openAiInstance: OpenAI
 
-    //    @Inject
-//    lateinit var appNotificationOpenedHandler: AppNotificationOpenedHandler
     override fun onCreate() {
         super.onCreate()
         AppInjector.init(this)
@@ -79,14 +71,8 @@ class App : Application(), HasAndroidInjector {
     override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
 
     override fun attachBaseContext(base: Context) {
-//        super.attachBaseContext(base)
-        super.attachBaseContext(LocaleUtils.setLocale(base))
+        super.attachBaseContext(base)
         MultiDex.install(this)
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        LocaleUtils.setLocale(this)
     }
 
 }
