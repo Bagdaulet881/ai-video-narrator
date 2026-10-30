@@ -6,9 +6,20 @@ I built it in late 2023 – early 2024, shortly after GPT-4 Vision came out, as 
 
 ## Demo
 
-> 🎬 _Demo GIF / video coming soon._
->
-> `![demo](docs/demo.gif)` · [Watch on YouTube](https://example.com)
+**Result: narrated video with synced subtitles**
+
+> GIF is silent — subtitles show the generated narration.
+> The original voice-over is not included because it used a cloned voice from third-party content.
+
+<img width="390" height="222" alt="download" src="https://github.com/user-attachments/assets/bd5765a6-88cc-4825-90ec-2409efe728c4" />
+
+
+**App flow**
+
+
+https://github.com/user-attachments/assets/07be33cd-376f-4a83-b989-698ac1d3e284
+
+
 
 ## How it works
 
